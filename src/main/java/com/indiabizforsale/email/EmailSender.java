@@ -77,7 +77,7 @@ public class EmailSender {
 
 
          private void sendBulkEmail(PayLoad payLoad) throws JsonProcessingException {
-             ArrayList<Recipient> arrayList = new ArrayList<>();
+             ArrayList<Recipient> arrayList = payLoad.getTo();
              int i;
              int count =0;
 
@@ -94,13 +94,13 @@ public class EmailSender {
              {
                  for (i = 0; i < arrayList.size(); i++)
                  {
-                     if (emailValidationService.emailValidate(payLoad.getTo().get(i).getEmail()))
+                     if (emailValidationService.emailValidate(arrayList.get(i).getEmail()))
                      {
                          if ((count < 19) && (!arrayList.isEmpty()))
                          {
-                             destination.withToAddresses(payLoad.getTo().get(i).getEmail());
+                             destination.withToAddresses(arrayList.get(i).getEmail());
                              bulkEmailDestination.setDestination(destination);
-                             bulkEmailDestination.setReplacementTemplateData(payLoad.getTo().get(i).getTemplateDataJson());
+                             bulkEmailDestination.setReplacementTemplateData(arrayList.get(i).getTemplateDataJson());
                              c.add(bulkEmailDestination);
                              count++;
                          }
@@ -129,7 +129,6 @@ public class EmailSender {
                                              .withCredentials(profileCredentialsProvider).withRegion("us-west-2").build();
 
                                      SendBulkTemplatedEmailResult sendBulkTemplatedEmailResult = client.sendBulkTemplatedEmail(sendBulkTemplatedEmailRequest);
-//            logger.info(sendBulkTemplatedEmailResult.getStatus());
                                      logger.info("Email sent!");
                                  } catch (Exception ex) {
 
@@ -142,7 +141,8 @@ public class EmailSender {
                       else
                          logger.debug("Wrong email format. Email ignored.");
                  }
-             } else
-                 logger.warn("List is empty.");
+             }
+             else
+             logger.warn("List is empty.");
          }
     }
