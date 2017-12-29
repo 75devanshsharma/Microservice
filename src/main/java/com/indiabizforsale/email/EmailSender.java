@@ -94,8 +94,8 @@ public class EmailSender {
              {
                  for (i = 0; i < arrayList.size(); i++)
                  {
-                     if (emailValidationService.emailValidate(arrayList.get(i).getEmail()))
-                     {
+                     boolean b = emailValidationService.emailValidate(arrayList.get(i).getEmail());
+                     if (b=true) {
                          if ((count < 19) && (!arrayList.isEmpty()))
                          {
                              destination.withToAddresses(arrayList.get(i).getEmail());
@@ -137,9 +137,9 @@ public class EmailSender {
                                  }
                                  count =0;
                          }
+                         } else {
+                             logger.debug("Wrong email format. Email ignored.");
                          }
-                      else
-                         logger.debug("Wrong email format. Email ignored.");
                  }
              }
              else
