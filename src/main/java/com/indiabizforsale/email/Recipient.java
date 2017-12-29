@@ -1,5 +1,8 @@
 package com.indiabizforsale.email;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.Map;
 
 public class Recipient {
@@ -16,6 +19,10 @@ public class Recipient {
                 this.templateData = templateData;
         }
 
+        public String getTemplateDataJson() throws JsonProcessingException {
+                ObjectMapper objectMapper = new ObjectMapper();
+                return objectMapper.writeValueAsString(templateData);
+        }
 
         public String getEmail () {
         return email;

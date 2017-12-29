@@ -14,6 +14,7 @@ class EmailServiceApplication {
         {
         if (args.length == 1)
         {
+
             logger.debug(Arrays.toString(args));
             logger.debug("Starting listener on " + args[0]);
             new EmailServiceApplication().listenAndProcess(args[0]);

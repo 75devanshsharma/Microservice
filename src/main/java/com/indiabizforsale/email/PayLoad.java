@@ -27,6 +27,13 @@ public class PayLoad {
 
     }
 
+    public int getCount()
+    {
+        int count;
+        count = this.getTo().size();
+        return  count;
+    }
+
 //    public String getAllEmail()
 //    {
 //        int i;
