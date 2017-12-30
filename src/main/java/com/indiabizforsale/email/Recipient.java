@@ -1,7 +1,9 @@
 package com.indiabizforsale.email;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 import java.util.Map;
 
@@ -9,6 +11,7 @@ public class Recipient {
 
         private String email;
         private Map<String,String> templateData;
+
 
 
         public Map<String, String> getTemplateData() {
@@ -21,6 +24,8 @@ public class Recipient {
 
         public String getTemplateDataJson() throws JsonProcessingException {
                 ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+
                 return objectMapper.writeValueAsString(templateData);
         }
 

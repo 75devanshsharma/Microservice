@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 
 
 public class EmailSender {
@@ -78,71 +80,78 @@ public class EmailSender {
 
          private void sendBulkEmail(PayLoad payLoad) throws JsonProcessingException {
              ArrayList<Recipient> arrayList = payLoad.getTo();
-             int i;
              int count =0;
 
              SendBulkTemplatedEmailRequest sendBulkTemplatedEmailRequest = new SendBulkTemplatedEmailRequest();
              sendBulkTemplatedEmailRequest.setSource(payLoad.getFrom());
              sendBulkTemplatedEmailRequest.setTemplate(payLoad.getTemplateId());
-             sendBulkTemplatedEmailRequest.setDefaultTemplateData("MyTemplate");
-             BulkEmailDestination bulkEmailDestination = new BulkEmailDestination();
+             BulkEmailDestination bulkEmailDestination;
              Collection<BulkEmailDestination> c = new ArrayList<>();
              Destination destination = new Destination();
              EmailValidationService emailValidationService = new EmailValidationService();
+//             int size=arrayList.size();
+             Iterator itr = arrayList.iterator();
 
-             if (!arrayList.isEmpty())
+             while(itr.hasNext())
              {
-                 for (i = 0; i < arrayList.size(); i++)
-                 {
-                     boolean b = emailValidationService.emailValidate(arrayList.get(i).getEmail());
+                 Recipient next = (Recipient)itr.next();
+//                 for (i = 0; i < size; i++)
+//                 {
+                     boolean b = emailValidationService.emailValidate(next.getEmail());
                      if (b=true) {
-                         if ((count < 19) && (!arrayList.isEmpty()))
-                         {
-                             destination.withToAddresses(arrayList.get(i).getEmail());
+                         if ((count < 20)&&(itr.hasNext())) {
+                             logger.info("Entered if");
+                             bulkEmailDestination = new BulkEmailDestination();
+                             destination = new Destination();
+                             destination.withToAddresses(next.getEmail());
                              bulkEmailDestination.setDestination(destination);
-                             bulkEmailDestination.setReplacementTemplateData(arrayList.get(i).getTemplateDataJson());
+                             bulkEmailDestination.setReplacementTemplateData(next.getTemplateDataJson());
                              c.add(bulkEmailDestination);
                              count++;
-                         }
-                     else
-                         {
-                                 sendBulkTemplatedEmailRequest.setDestinations(c);
-                                 try {
-
-                                     logger.info("Attempting to send an email through Amazon SES by using the AWS SDK for Java...");
-
-                                     ProfileCredentialsProvider profileCredentialsProvider = new ProfileCredentialsProvider();
-                                     try {
-                                         profileCredentialsProvider.getCredentials();
-                                     } catch (Exception e) {
-                                         throw new AmazonClientException(
-
-                                                 "Cannot load the credentials from the credential profiles file. " +
-
-                                                         "Please make sure that your credentials file is at the correct " +
-
-                                                         "location (~/.aws/credentials), and is in valid format.",
-
-                                                 e);
-                                     }
-                                     AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()
-                                             .withCredentials(profileCredentialsProvider).withRegion("us-west-2").build();
-
-                                     SendBulkTemplatedEmailResult sendBulkTemplatedEmailResult = client.sendBulkTemplatedEmail(sendBulkTemplatedEmailRequest);
-                                     logger.info("Email sent!");
-                                 } catch (Exception ex) {
-
-                                     logger.warn("The email was not sent.");
-                                     logger.warn("Error message: " + ex.getMessage());
-                                 }
-                                 count =0;
-                         }
+//                             logger.info(String.valueOf(arrayList.size()));
+                             itr.remove();
+//                             logger.info(String.valueOf(arrayList.size()));
                          } else {
+                             logger.info("Entered else");
+                             logger.info(c.toString());
+                             sendBulkTemplatedEmailRequest.setDestinations(c);
+                             sendBulkTemplatedEmailRequest.setDefaultTemplateData("{}");
+                             try {
+
+                                 logger.info("Attempting to send an email through Amazon SES by using the AWS SDK for Java...");
+
+                                 ProfileCredentialsProvider profileCredentialsProvider = new ProfileCredentialsProvider();
+                                 try {
+                                     profileCredentialsProvider.getCredentials();
+                                 } catch (Exception e) {
+                                     throw new AmazonClientException(
+
+                                             "Cannot load the credentials from the credential profiles file. " +
+
+                                                     "Please make sure that your credentials file is at the correct " +
+
+                                                     "location (~/.aws/credentials), and is in valid format.",
+
+                                             e);
+                                 }
+                                 AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()
+                                         .withCredentials(profileCredentialsProvider).withRegion("us-west-2").build();
+
+                                 SendBulkTemplatedEmailResult sendBulkTemplatedEmailResult = client.sendBulkTemplatedEmail(sendBulkTemplatedEmailRequest);
+                                 logger.info(String.valueOf(sendBulkTemplatedEmailResult.getStatus()));
+                                 logger.info("Email sent!");
+                                 logger.info(next.getTemplateDataJson());
+                             } catch (Exception ex) {
+
+                                 logger.warn("The email was not sent.");
+                                 logger.warn("Error message: " + ex.getMessage());
+                             }
+                             count = 0;
+                         }
+                     } else{
                              logger.debug("Wrong email format. Email ignored.");
                          }
                  }
              }
-             else
-             logger.warn("List is empty.");
+
          }
-    }
