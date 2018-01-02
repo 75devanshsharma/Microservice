@@ -8,13 +8,11 @@ import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 
 
@@ -87,19 +85,15 @@ public class EmailSender {
              sendBulkTemplatedEmailRequest.setTemplate(payLoad.getTemplateId());
              BulkEmailDestination bulkEmailDestination;
              Collection<BulkEmailDestination> c = new ArrayList<>();
-             Destination destination = new Destination();
+             Destination destination;
              EmailValidationService emailValidationService = new EmailValidationService();
-//             int size=arrayList.size();
              Iterator itr = arrayList.iterator();
 
              while(itr.hasNext())
              {
                  Recipient next = (Recipient)itr.next();
-//                 for (i = 0; i < size; i++)
-//                 {
                      boolean b = emailValidationService.emailValidate(next.getEmail());
                      if (b=true) {
-                         if ((count < 20)&&(itr.hasNext())) {
                              logger.info("Entered if");
                              bulkEmailDestination = new BulkEmailDestination();
                              destination = new Destination();
@@ -108,17 +102,17 @@ public class EmailSender {
                              bulkEmailDestination.setReplacementTemplateData(next.getTemplateDataJson());
                              c.add(bulkEmailDestination);
                              count++;
-//                             logger.info(String.valueOf(arrayList.size()));
                              itr.remove();
-//                             logger.info(String.valueOf(arrayList.size()));
-                         } else {
+                             if((count<20)&&(itr.hasNext()))
+                                 continue;
+                         else {
                              logger.info("Entered else");
                              logger.info(c.toString());
                              sendBulkTemplatedEmailRequest.setDestinations(c);
                              sendBulkTemplatedEmailRequest.setDefaultTemplateData("{}");
                              try {
 
-                                 logger.info("Attempting to send an email through Amazon SES by using the AWS SDK for Java...");
+                                 logger.info("Attempting to send bulk email through Amazon SES by using the AWS SDK for Java...");
 
                                  ProfileCredentialsProvider profileCredentialsProvider = new ProfileCredentialsProvider();
                                  try {
@@ -140,7 +134,6 @@ public class EmailSender {
                                  SendBulkTemplatedEmailResult sendBulkTemplatedEmailResult = client.sendBulkTemplatedEmail(sendBulkTemplatedEmailRequest);
                                  logger.info(String.valueOf(sendBulkTemplatedEmailResult.getStatus()));
                                  logger.info("Email sent!");
-                                 logger.info(next.getTemplateDataJson());
                              } catch (Exception ex) {
 
                                  logger.warn("The email was not sent.");
@@ -148,10 +141,12 @@ public class EmailSender {
                              }
                              count = 0;
                          }
-                     } else{
+                     }
+                     else{
                              logger.debug("Wrong email format. Email ignored.");
                          }
                  }
+                 logger.info("Out of while loop.");
              }
 
          }
