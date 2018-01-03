@@ -134,7 +134,7 @@ public class EmailSender {
                     continue;
                 else {
                     logger.info("Entered else");
-                    logger.info(c.toString());
+                    logger.info("{}",c);
                     sendBulkTemplatedEmailRequest.setDestinations(c);
                     sendBulkTemplatedEmailRequest.setDefaultTemplateData("{}");
                     try {
@@ -147,7 +147,7 @@ public class EmailSender {
                                 .withCredentials(profileCredentialsProvider).withRegion("us-west-2").build();
 
                         SendBulkTemplatedEmailResult sendBulkTemplatedEmailResult = client.sendBulkTemplatedEmail(sendBulkTemplatedEmailRequest);
-                        logger.info(sendBulkTemplatedEmailResult.getStatus().toString());
+                        logger.info("{}",sendBulkTemplatedEmailResult.getStatus());
                         logger.info("Email sent!");
                     } catch (Exception ex) {
 

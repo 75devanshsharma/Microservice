@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class PayLoadTest {
     @Test
-            public void payloadTest()
+    public void payloadTest()
      {
         final org.slf4j.Logger logger = LoggerFactory.getLogger(PayLoadTest.class);
         ObjectMapper mapper = new ObjectMapper();

@@ -38,7 +38,7 @@ public class MessageReceiverImpl implements com.google.cloud.pubsub.v1.MessageRe
 
 
         String msg = message.getData().toStringUtf8();
-        logger.info("Message " + msg);
+        logger.info("Message {} " , msg);
         try {
             PayLoad payLoad = mapper.readValue(msg, PayLoad.class);
             if (runMode.equals("prod")) {

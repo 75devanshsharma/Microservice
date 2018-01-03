@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PubSubSubscriber {
-    private static final String projectId = ServiceOptions.getDefaultProjectId();
+    private static final String PROJECT_ID = ServiceOptions.getDefaultProjectId();
     private String subscriptionId;
     private static final Logger logger = LoggerFactory.getLogger(PubSubSubscriber.class);
     private String runMode;
@@ -37,7 +37,7 @@ public class PubSubSubscriber {
         logger.info("Init listening ");
         FlowControlSettings flowControlSettings =
                 FlowControlSettings.newBuilder().setMaxOutstandingElementCount(maxMessageCount).build();
-        SubscriptionName subscriptionName = SubscriptionName.of(projectId, subscriptionId);
+        SubscriptionName subscriptionName = SubscriptionName.of(PROJECT_ID, subscriptionId);
         Subscriber subscriber;
 
         try {

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 
+
 public class PayLoad {
 
     private ArrayList<Recipient> to;
@@ -34,7 +35,6 @@ public class PayLoad {
         count = this.getTo().size();
         return count;
     }
-
 
     public ArrayList<Recipient> getTo() {
         return to;
