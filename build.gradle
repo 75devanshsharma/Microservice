@@ -1,3 +1,6 @@
+plugins {
+    id "org.sonarqube" version "2.5"
+}
 group 'com.indiabizforsale'
 version '1.0-SNAPSHOT'
 
@@ -20,6 +23,5 @@ dependencies {
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.3'
     compile group: 'com.google.cloud', name: 'google-cloud-pubsub', version: '0.32.0-beta'
     testCompile group: 'junit', name: 'junit', version: '4.12'
-
 
 }

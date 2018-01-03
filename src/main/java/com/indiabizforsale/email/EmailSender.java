@@ -44,6 +44,24 @@ public class EmailSender {
      * @param payLoad
      * @throws IOException
      */
+
+    private void credentialCheck(ProfileCredentialsProvider profileCredentialsProvider)
+    {
+
+        try {
+            profileCredentialsProvider.getCredentials();
+        } catch (Exception e) {
+            throw new AmazonClientException(
+
+                    "Cannot load the credentials from the credential profiles file. " +
+
+                            "Please make sure that your credentials file is at the correct " +
+
+                            "location (~/.aws/credentials), and is in valid format.",
+
+                    e);
+        }
+    }
     private void sendEmail(PayLoad payLoad) throws IOException {
         EmailValidationService emailValidationService = new EmailValidationService();
 
@@ -57,21 +75,8 @@ public class EmailSender {
             try {
 
                 logger.info("Attempting to send an email through Amazon SES by using the AWS SDK for Java...");
-
                 ProfileCredentialsProvider profileCredentialsProvider = new ProfileCredentialsProvider();
-                try {
-                    profileCredentialsProvider.getCredentials();
-                } catch (Exception e) {
-                    throw new AmazonClientException(
-
-                            "Cannot load the credentials from the credential profiles file. " +
-
-                                    "Please make sure that your credentials file is at the correct " +
-
-                                    "location (~/.aws/credentials), and is in valid format.",
-
-                            e);
-                }
+                credentialCheck(profileCredentialsProvider);
                 AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()
                         .withCredentials(profileCredentialsProvider).withRegion("us-west-2").build();
 
@@ -114,8 +119,7 @@ public class EmailSender {
 
         while (itr.hasNext()) {
             Recipient next = (Recipient) itr.next();
-            boolean b = emailValidationService.emailValidate(next.getEmail());
-            if (b = true) {
+            if (emailValidationService.emailValidate(next.getEmail())) {
                 logger.info("Entered if");
                 bulkEmailDestination = new BulkEmailDestination();
                 destination = new Destination();
@@ -137,19 +141,7 @@ public class EmailSender {
                         logger.info("Attempting to send bulk email through Amazon SES by using the AWS SDK for Java...");
 
                         ProfileCredentialsProvider profileCredentialsProvider = new ProfileCredentialsProvider();
-                        try {
-                            profileCredentialsProvider.getCredentials();
-                        } catch (Exception e) {
-                            throw new AmazonClientException(
-
-                                    "Cannot load the credentials from the credential profiles file. " +
-
-                                            "Please make sure that your credentials file is at the correct " +
-
-                                            "location (~/.aws/credentials), and is in valid format.",
-
-                                    e);
-                        }
+                        credentialCheck(profileCredentialsProvider);
                         AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()
                                 .withCredentials(profileCredentialsProvider).withRegion("us-west-2").build();
 
