@@ -1,4 +1,5 @@
 package com.indiabizforsale.email;
+
 import com.google.cloud.pubsub.v1.Subscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,14 +7,12 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 
 class EmailServiceApplication {
-        //To run all the email services.
-        private static final Logger logger = LoggerFactory.getLogger(EmailServiceApplication.class);
-        private String runMode;
+    //To run all the email services.
+    private static final Logger logger = LoggerFactory.getLogger(EmailServiceApplication.class);
+    private String runMode;
 
-        public static void main(String[] args)
-        {
-        if (args.length == 1)
-        {
+    public static void main(String[] args) {
+        if (args.length == 1) {
             logger.debug(Arrays.toString(args));
             logger.debug("Starting listener on " + args[0]);
             new EmailServiceApplication().listenAndProcess(args[0]);
@@ -22,7 +21,7 @@ class EmailServiceApplication {
         }
     }
 
-        private void listenAndProcess(String subscription) {
+    private void listenAndProcess(String subscription) {
         assignRunMode();
         logger.info("Running Application in " + runMode);
         Subscriber subscriber = null;
@@ -40,7 +39,7 @@ class EmailServiceApplication {
         }
     }
 
-        private void assignRunMode() {
+    private void assignRunMode() {
         try {
             runMode = System.getenv("SERVICE_MODE");
         } catch (NullPointerException | SecurityException e) {
@@ -51,7 +50,7 @@ class EmailServiceApplication {
             runMode = "test";
         }
     }
-    }
+}
 
 
 

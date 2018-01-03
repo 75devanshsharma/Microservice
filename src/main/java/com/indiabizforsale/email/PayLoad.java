@@ -2,6 +2,7 @@ package com.indiabizforsale.email;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.ArrayList;
 
 public class PayLoad {
@@ -11,7 +12,7 @@ public class PayLoad {
     private String templateId;
     private String fromName;
 
-
+    //To get template data for a single recipient
     public String getFirstTemplate() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.writeValueAsString(this.getTo().get(0).getTemplateData());
@@ -23,11 +24,10 @@ public class PayLoad {
     }
 
 
-    public int getCount()
-    {
+    public int getCount() {
         int count;
         count = this.getTo().size();
-        return  count;
+        return count;
     }
 
 
@@ -39,9 +39,9 @@ public class PayLoad {
         this.to = to;
     }
 
-
+    //To return the email in the form " name of sender <email> " .
     public String getFrom() {
-        from = fromName + "<" + from +">";
+        from = fromName + "<" + from + ">";
         return from;
     }
 
