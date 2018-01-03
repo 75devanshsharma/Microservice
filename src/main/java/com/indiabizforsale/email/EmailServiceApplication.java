@@ -4,8 +4,6 @@ import com.google.cloud.pubsub.v1.Subscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-
 class EmailServiceApplication {
     //To run all the email services.
     private static final Logger logger = LoggerFactory.getLogger(EmailServiceApplication.class);

@@ -5,7 +5,7 @@ import com.google.cloud.ServiceOptions;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.pubsub.v1.SubscriptionName;
-import com.indiabizforsale.email.Exception.*;
+import com.indiabizforsale.email.exceptions.SubscriberCreationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

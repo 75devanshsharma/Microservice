@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.pubsub.v1.PubsubMessage;
-import com.indiabizforsale.email.Exception.*;
+import com.indiabizforsale.email.exceptions.EventParserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

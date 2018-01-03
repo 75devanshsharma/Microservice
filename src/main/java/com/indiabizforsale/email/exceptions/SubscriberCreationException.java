@@ -1,4 +1,4 @@
-package com.indiabizforsale.email.Exception;
+package com.indiabizforsale.email.exceptions;
 
 public class SubscriberCreationException extends SubscriberException {
 
