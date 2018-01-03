@@ -9,7 +9,8 @@ import java.util.Map;
 
 public class EmailSenderTest {
     @Test
-    public static void main(String[] args) {
+    public void emailTest()
+    {
         EmailSender emailSender = new EmailSender();
         PayLoad payLoad = new PayLoad();
         ArrayList<Recipient> to = new ArrayList<>();
