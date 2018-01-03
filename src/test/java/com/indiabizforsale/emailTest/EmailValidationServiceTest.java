@@ -1,4 +1,5 @@
 package com.indiabizforsale.emailTest;
+
 import org.junit.*;
 import com.indiabizforsale.email.EmailValidationService;
 
