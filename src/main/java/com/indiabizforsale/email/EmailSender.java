@@ -37,16 +37,8 @@ public class EmailSender {
             sendBulkEmail(payLoad);
     }
 
-    /**
-     * <p> This method is used to send email to a single recipient by setting the to,from,templateId
-     * & template data. The email is sent using the Amazon SES service.</p>
-     *
-     * @param payLoad
-     * @throws IOException
-     */
 
-    private void credentialCheck(ProfileCredentialsProvider profileCredentialsProvider)
-    {
+    private void credentialCheck(ProfileCredentialsProvider profileCredentialsProvider) {
 
         try {
             profileCredentialsProvider.getCredentials();
@@ -62,6 +54,15 @@ public class EmailSender {
                     e);
         }
     }
+
+    /**
+     * <p> This method is used to send email to a single recipient by setting the to,from,templateId
+     * & template data. The email is sent using the Amazon SES service.</p>
+     *
+     * @param payLoad
+     * @throws IOException
+     */
+
     private void sendEmail(PayLoad payLoad) throws IOException {
         EmailValidationService emailValidationService = new EmailValidationService();
 
@@ -146,7 +147,7 @@ public class EmailSender {
                                 .withCredentials(profileCredentialsProvider).withRegion("us-west-2").build();
 
                         SendBulkTemplatedEmailResult sendBulkTemplatedEmailResult = client.sendBulkTemplatedEmail(sendBulkTemplatedEmailRequest);
-                        logger.info(String.valueOf(sendBulkTemplatedEmailResult.getStatus()));
+                        logger.info(sendBulkTemplatedEmailResult.getStatus().toString());
                         logger.info("Email sent!");
                     } catch (Exception ex) {
 

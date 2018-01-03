@@ -48,7 +48,7 @@ public class MessageReceiverImpl implements com.google.cloud.pubsub.v1.MessageRe
             logger.error("Exception", e);
             consumer.ack();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("IOException",e);
         }
         consumer.ack();
 
