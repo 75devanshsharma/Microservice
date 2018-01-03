@@ -7,7 +7,12 @@ import org.slf4j.LoggerFactory;
 public class EmailValidationService {
     private static final Logger logger = LoggerFactory.getLogger(EmailValidationService.class);
 
-    // For validating the email format.
+    /**
+     * <h1>For validating the email format by passing the email as a parameter. </h1>
+     *
+     * @param email
+     * @return flag of type boolean
+     */
     public boolean emailValidate(String email) {
         boolean flag = false;
         EmailValidator ev = EmailValidator.getInstance();

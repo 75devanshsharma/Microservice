@@ -20,9 +20,14 @@ import java.util.Iterator;
 public class EmailSender {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(EmailSender.class);
 
-    /* To count the number of recipient in the payload.
-       If the count is 1 then sendEmail method is used for sending emails
-       otherwise, sendBulkEmail method for sending email to all.
+    /**
+     * <p>To count the number of recipient in the payload.
+     * If the count is 1 then sendEmail method is used for sending emails
+     * otherwise, sendBulkEmail method for sending email to all.
+     * </p>
+     *
+     * @param payLoad
+     * @throws IOException
      */
     public void checkEmailCount(PayLoad payLoad) throws IOException {
 
@@ -32,6 +37,13 @@ public class EmailSender {
             sendBulkEmail(payLoad);
     }
 
+    /**
+     * <p> This method is used to send email to a single recipient by setting the to,from,templateId
+     * & template data. The email is sent using the Amazon SES service.</p>
+     *
+     * @param payLoad
+     * @throws IOException
+     */
     private void sendEmail(PayLoad payLoad) throws IOException {
         EmailValidationService emailValidationService = new EmailValidationService();
 
@@ -76,6 +88,16 @@ public class EmailSender {
             logger.warn("Email format entered is incorrect. Please Check the email.");
     }
 
+    /**
+     * <p> This method is used for sending bulk emails. More than one recipient receive the message by passing
+     * the destination address.
+     * The destination is stored in the collection of arrayList.
+     * The batching is done to send 20 emails max per call to Amazon SES.
+     * </p>
+     *
+     * @param payLoad
+     * @throws JsonProcessingException
+     */
 
     private void sendBulkEmail(PayLoad payLoad) throws JsonProcessingException {
         ArrayList<Recipient> arrayList = payLoad.getTo();
