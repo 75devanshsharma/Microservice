@@ -1,19 +1,17 @@
-package com.indiabizforsale.emailTest;
+package com.indiabizforsale.email;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.indiabizforsale.email.PayLoad;
-
+import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 
 public class PayLoadTest {
     public static void main(String[] args) throws IOException {
-
+        final org.slf4j.Logger logger = LoggerFactory.getLogger(PayLoadTest.class);
         ObjectMapper mapper = new ObjectMapper();
         String json = "{\"fromName\":\"mkyong\",\"from\":\"raj@indiabizforsale.com\",\"to\":[{\"email\":\"devansh@indiabizforsale.com\"},{\"email\":\"75devanshsharma@gmail.com\",\"templateData\":{\"name\":\"Rahul\"}}],\"templateId\":\"myTemplate\"}";
         PayLoad payLoad1 = mapper.readValue(json, PayLoad.class);
         String s = payLoad1.getTo().toString();
-        System.out.println(s);
-
+        logger.info(s);
     }
 }

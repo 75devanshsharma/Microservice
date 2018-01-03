@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 public class Recipient {
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(EmailSender.class);
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Recipient.class);
     private String email;
     private Map<String, String> templateData;
 
