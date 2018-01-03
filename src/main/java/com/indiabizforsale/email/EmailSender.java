@@ -32,7 +32,7 @@ public class EmailSender {
     {
         EmailValidationService emailValidationService = new EmailValidationService();
 
-        if(emailValidationService.emailValidate(payLoad.getTo().get(0).getEmail()))
+        if(emailValidationService.emailValidate(payLoad.getTo().get(0).getRawEmail()))
         {
             SendTemplatedEmailRequest sendTemplatedEmailRequest = new SendTemplatedEmailRequest();
             sendTemplatedEmailRequest.setDestination(new Destination().withToAddresses(payLoad.getFirstEmail()));

@@ -4,6 +4,10 @@ import com.amazonaws.services.simpleemail.model.BulkEmailDestination;
 import com.amazonaws.services.simpleemail.model.Destination;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,16 +20,25 @@ public class PayLoad {
     private String fromName;
     private String msg;
 
-    public String getFirstEmail()
-    {
-        return this.getTo().get(0).getEmail();
-    }
 
     public String getFirstTemplate() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.writeValueAsString(this.getTo().get(0).getTemplateData());
 
     }
+
+//    public String getFirstEmail() throws JsonProcessingException {
+//        String email = this.getTo().get(0).getEmail();
+////        email="Raj geriya <"+email+">";
+//        String name = this.getName();
+//        email = name+"<"+email+">";
+//        return email;
+//    }
+
+    public String getFirstEmail() {
+        return this.getTo().get(0).getEmail();
+    }
+
 
     public int getCount()
     {
@@ -66,6 +79,7 @@ public class PayLoad {
 
 
     public String getFrom() {
+        from = fromName + "<" + from +">";
         return from;
     }
 
@@ -80,23 +94,6 @@ public class PayLoad {
     public void setTemplateId(String templateId) {
         this.templateId = templateId;
     }
-
-//    public Collection<BulkEmailDestination> getAllEmails()
-//    {
-//        for(int i=0;i<20;i++)
-//        {
-//        Collection<BulkEmailDestination> collection = new ArrayList<>();
-//        BulkEmailDestination bulkEmailDestination = new BulkEmailDestination();
-//        Destination destination = new Destination();
-//        destination.withToAddresses("devansh@indiabizforsale.com");
-//        bulkEmailDestination.setDestination(destination);
-//        bulkEmailDestination.setReplacementTemplateData("{}");
-//        collection.add(bulkEmailDestination);
-//
-//        return collection;
-//    }
-//        return null;
-//    }
 
     public String getFromName() {
         return fromName;
