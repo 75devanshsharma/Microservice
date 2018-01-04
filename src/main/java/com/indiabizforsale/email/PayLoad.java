@@ -50,9 +50,7 @@ public class PayLoad {
      * @return email
      */
     public String getFrom() {
-
-        String from1 = fromName + "<" + from + ">";
-        return from1;
+        return fromName + "<" + from + ">";
     }
 
     public void setFrom(String from) {
