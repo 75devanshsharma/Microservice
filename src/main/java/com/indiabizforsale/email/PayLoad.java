@@ -50,8 +50,9 @@ public class PayLoad {
      * @return email
      */
     public String getFrom() {
-        from = fromName + "<" + from + ">";
-        return from;
+
+        String from1 = fromName + "<" + from + ">";
+        return from1;
     }
 
     public void setFrom(String from) {
@@ -72,6 +73,10 @@ public class PayLoad {
 
     public void setFromName(String fromName) {
         this.fromName = fromName;
+    }
+
+    public String getRawFrom() {
+        return from;
     }
 
 }
