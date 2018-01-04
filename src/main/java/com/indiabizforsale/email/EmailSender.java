@@ -29,12 +29,13 @@ public class EmailSender {
      * @param payLoad
      * @throws IOException
      */
-    public void checkEmailCount(PayLoad payLoad) throws IOException {
+    public boolean checkEmailCount(PayLoad payLoad) throws IOException {
 
         if (payLoad.getCount() < 2)
             sendEmail(payLoad);
         else
             sendBulkEmail(payLoad);
+        return true;
     }
 
 
@@ -120,7 +121,7 @@ public class EmailSender {
 
         while (itr.hasNext()) {
             Recipient next = (Recipient) itr.next();
-            if (emailValidationService.emailValidate(next.getEmail())) {
+            if (emailValidationService.emailValidate(next.getRawEmail())) {
                 logger.info("Entered if");
                 bulkEmailDestination = new BulkEmailDestination();
                 destination = new Destination();
