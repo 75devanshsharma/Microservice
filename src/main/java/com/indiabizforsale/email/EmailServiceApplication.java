@@ -26,7 +26,10 @@ class EmailServiceApplication {
         try {
             subscriber = pubSubSubscriber.getSubscriber();
             pubSubSubscriber.startSubscriber(subscriber);
-            while (true) ;
+            synchronized(this)
+            {
+                wait();
+            }
         } catch (Exception e) {
             logger.error("Exception", e);
         } finally {
