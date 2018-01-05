@@ -47,7 +47,7 @@ public class Recipient {
     public String getEmail() {
         if (getTemplateData().containsKey("name")) {
             String mail = getTemplateValue("name") + " <" + getRawEmail() + ">";
-            logger.info(mail);
+            logger.info("Email format is now :" +mail);
             return mail;
         } else
             return getRawEmail();
