@@ -10,8 +10,7 @@ import java.util.Map;
 
 public class EmailSenderTest {
     @Test
-    public void emailTest()
-    {
+    public void emailTest() throws IOException {
         EmailSender emailSender = new EmailSender();
         PayLoad payLoad = new PayLoad();
         ArrayList<Recipient> to = new ArrayList<>();
@@ -31,10 +30,7 @@ public class EmailSenderTest {
         payLoad.setTemplateId("MyTemplate1");
         payLoad.setFrom("raj@indiabizforsale.com");
         payLoad.setFromName("Raj");
-        try {
-            Assert.assertTrue(emailSender.checkEmailCount(payLoad));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Assert.assertTrue(emailSender.checkEmailCount(payLoad));
+
     }
 }

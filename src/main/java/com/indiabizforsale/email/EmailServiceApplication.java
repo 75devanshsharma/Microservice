@@ -11,7 +11,7 @@ class EmailServiceApplication {
 
     public static void main(String[] args) {
         if (args.length == 1) {
-            logger.debug("Starting listener on {} " , args[0]);
+            logger.debug("Starting listener on {} ", args[0]);
             new EmailServiceApplication().listenAndProcess(args[0]);
         } else {
             logger.error("Provide subscription name and mode : java -jar app.jar [subscriptionName]");
@@ -20,14 +20,13 @@ class EmailServiceApplication {
 
     private void listenAndProcess(String subscription) {
         assignRunMode();
-        logger.info("Running Application in {}" , runMode);
+        logger.info("Running Application in {}", runMode);
         Subscriber subscriber = null;
         PubSubSubscriber pubSubSubscriber = new PubSubSubscriber(subscription, runMode);
         try {
             subscriber = pubSubSubscriber.getSubscriber();
             pubSubSubscriber.startSubscriber(subscriber);
-            synchronized(this)
-            {
+            synchronized (this) {
                 wait();
             }
         } catch (Exception e) {
