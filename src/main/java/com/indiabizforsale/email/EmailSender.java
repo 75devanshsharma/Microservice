@@ -134,6 +134,7 @@ public class EmailSender {
                 if ((count < 20) && (itr.hasNext()))
                     continue;
                 else {
+                    logger.info("Count is {}", count);
                     logger.info("Entered else");
                     logger.info("{}", c);
                     sendBulkTemplatedEmailRequest.setDestinations(c);
