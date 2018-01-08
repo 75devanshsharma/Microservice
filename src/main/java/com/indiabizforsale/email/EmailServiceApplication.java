@@ -5,11 +5,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 class EmailServiceApplication {
+
     //To run all the email services.
     private static final Logger logger = LoggerFactory.getLogger(EmailServiceApplication.class);
+    public static String AwsAccessKeyId;
+    public static String AccessKeySecret;
     private String runMode;
 
     public static void main(String[] args) {
+
+        ConfigurationService configurationService = new ConfigurationService();
+
+        configurationService.getCredentials();
+        AwsAccessKeyId = configurationService.getAccessKey();
+        AccessKeySecret = configurationService.getSecretKey();
         if (args.length == 1) {
             logger.debug("Starting listener on {} ", args[0]);
             new EmailServiceApplication().listenAndProcess(args[0]);

@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 
 public class PubSubSubscriber {
     private static final String PROJECT_ID = ServiceOptions.getDefaultProjectId();
-    private String subscriptionId;
     private static final Logger logger = LoggerFactory.getLogger(PubSubSubscriber.class);
+    private String subscriptionId;
     private String runMode;
 
     PubSubSubscriber(String subscriptionId, String runMode) {

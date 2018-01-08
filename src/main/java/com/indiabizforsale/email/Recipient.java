@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.LoggerFactory;
 
-
 import java.util.Map;
 
 public class Recipient {
@@ -53,16 +52,16 @@ public class Recipient {
             return getRawEmail();
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getRawEmail() {
         return email;
     }
 
     private String getTemplateValue(String key) {
         return templateData.get(key);
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public boolean checkKey() {

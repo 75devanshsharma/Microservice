@@ -1,13 +1,13 @@
 package com.indiabizforsale.email;
 
-import org.slf4j.Logger;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class EmailValidationService {
     private static final Logger logger = LoggerFactory.getLogger(EmailValidationService.class);
 
-//    /**
+    //    /**
 //     * <h1>For validating the email format by passing the email as a parameter. </h1>
 //     *
 //     * @param email

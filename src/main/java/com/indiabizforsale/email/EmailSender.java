@@ -1,13 +1,10 @@
 package com.indiabizforsale.email;
 
-import com.amazonaws.*;
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
-import com.amazonaws.services.simpleemail.model.*;
-
-
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
-
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
+import com.amazonaws.services.simpleemail.model.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.LoggerFactory;
 
@@ -39,23 +36,6 @@ public class EmailSender {
     }
 
 
-    private void credentialCheck(ProfileCredentialsProvider profileCredentialsProvider) {
-
-        try {
-            profileCredentialsProvider.getCredentials();
-        } catch (Exception e) {
-            throw new AmazonClientException(
-
-                    "Cannot load the credentials from the credential profiles file. " +
-
-                            "Please make sure that your credentials file is at the correct " +
-
-                            "location (~/.aws/credentials), and is in valid format.",
-
-                    e);
-        }
-    }
-
     /**
      * <p> This method is used to send email to a single recipient by setting the to,from,templateId
      * & template data. The email is sent using the Amazon SES service.</p>
@@ -77,10 +57,10 @@ public class EmailSender {
             try {
 
                 logger.info("Attempting to send an email through Amazon SES by using the AWS SDK for Java...");
-                ProfileCredentialsProvider profileCredentialsProvider = new ProfileCredentialsProvider();
-                credentialCheck(profileCredentialsProvider);
+                BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(EmailServiceApplication.AwsAccessKeyId, EmailServiceApplication.AccessKeySecret);
+                logger.info("{}", basicAWSCredentials);
                 AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()
-                        .withCredentials(profileCredentialsProvider).withRegion("us-west-2").build();
+                        .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials)).withRegion("us-west-2").build();
 
                 SendTemplatedEmailResult sr = client.sendTemplatedEmail(sendTemplatedEmailRequest);
                 logger.info(sr.getMessageId());
@@ -143,10 +123,10 @@ public class EmailSender {
 
                         logger.info("Attempting to send bulk email through Amazon SES by using the AWS SDK for Java...");
 
-                        ProfileCredentialsProvider profileCredentialsProvider = new ProfileCredentialsProvider();
-                        credentialCheck(profileCredentialsProvider);
+                        BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(EmailServiceApplication.AwsAccessKeyId, EmailServiceApplication.AccessKeySecret);
+
                         AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()
-                                .withCredentials(profileCredentialsProvider).withRegion("us-west-2").build();
+                                .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials)).withRegion("us-west-2").build();
 
                         SendBulkTemplatedEmailResult sendBulkTemplatedEmailResult = client.sendBulkTemplatedEmail(sendBulkTemplatedEmailRequest);
                         logger.info("{}", sendBulkTemplatedEmailResult.getStatus());
