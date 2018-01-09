@@ -42,8 +42,6 @@ public class PayLoad {
     }
 
 
-
-
     /**
      * <h1>To get template data for a single recipient</h1>
      *

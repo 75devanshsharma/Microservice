@@ -165,7 +165,7 @@ public class EmailSender {
                     .withCharset("UTF-8")).withBody(new Body().withText(new Content().withData(payLoad.getBodyText())
                     .withCharset("UTF-8")).withHtml(new Content().withData(payLoad.getBodyText()).withCharset("UTF-8"))));
 
-            logger.info("{}",sendEmailRequest);
+            logger.info("{}", sendEmailRequest);
             try {
                 logger.info("Attempting to send an email through Amazon SES by using the AWS SDK for Java...");
 
