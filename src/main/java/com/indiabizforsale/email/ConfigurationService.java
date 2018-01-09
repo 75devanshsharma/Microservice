@@ -26,19 +26,24 @@ public class ConfigurationService {
         secretAccessKey = credential.getString("SecretAccessKey");
     }
 
-    public String getAccessKey() {
+    private String getAccessKey() {
         getCredentials();
         logger.info(accessKeyId);
         return accessKeyId;
 
     }
 
-    public String getSecretKey() {
+    private String getSecretKey() {
         getCredentials();
         logger.info(secretAccessKey);
-        if(secretAccessKey!=null)
-        return secretAccessKey;
+        if (secretAccessKey != null)
+            return secretAccessKey;
         else
             return "Secret key is null";
+    }
+
+    public void SetEmailCredentials() {
+        System.setProperty("AwsAccessKey", new ConfigurationService().getAccessKey());
+        System.setProperty("AwsSecretKey", new ConfigurationService().getSecretKey());
     }
 }

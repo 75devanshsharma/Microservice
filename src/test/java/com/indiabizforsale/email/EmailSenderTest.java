@@ -1,6 +1,8 @@
 package com.indiabizforsale.email;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -9,10 +11,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EmailSenderTest {
+
+    @Before
+    public void setEmailCredential() {
+        new ConfigurationService().SetEmailCredentials();
+    }
+
     @Test
     public void emailTest() throws IOException {
-        System.setProperty("AwsAccessKey",new ConfigurationService().getAccessKey());
-        System.setProperty("AwsSecretKey", new ConfigurationService().getSecretKey());
         EmailSender emailSender = new EmailSender();
         PayLoad payLoad = new PayLoad();
         ArrayList<Recipient> to = new ArrayList<>();
@@ -32,8 +38,6 @@ public class EmailSenderTest {
 
     @Test
     public void bulkEmailTest() throws IOException {
-        System.setProperty("AwsAccessKey",new ConfigurationService().getAccessKey());
-        System.setProperty("AwsSecretKey", new ConfigurationService().getSecretKey());
         EmailSender emailSender = new EmailSender();
         PayLoad payLoad = new PayLoad();
         Recipient recipient;
@@ -53,5 +57,11 @@ public class EmailSenderTest {
         payLoad.setFromName("Dev");
         Assert.assertTrue(emailSender.checkEmailCount(payLoad));
 
+    }
+
+    @After
+    public void removeEmailCredentials() {
+        System.clearProperty("AwsAccessKey");
+        System.clearProperty("AwsSecretKey");
     }
 }

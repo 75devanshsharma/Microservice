@@ -8,20 +8,11 @@ class EmailServiceApplication {
 
     //To run all the email services.
     private static final Logger logger = LoggerFactory.getLogger(EmailServiceApplication.class);
-//    public static final String AwsAccessKeyId = new ConfigurationService().getAccessKey();
-//    public static final String AccessKeySecret = new ConfigurationService().getSecretKey();
     private String runMode;
 
     public static void main(String[] args) {
 
-//        ConfigurationService configurationService = new ConfigurationService();
-//
-//        configurationService.getCredentials();
-//        AwsAccessKeyId = configurationService.getAccessKey();
-//        AccessKeySecret = configurationService.getSecretKey();
-
-        System.setProperty("AwsAccessKey",new ConfigurationService().getAccessKey());
-        System.setProperty("AwsSecretKey", new ConfigurationService().getSecretKey());
+        new ConfigurationService().SetEmailCredentials();
 
         if (args.length == 1) {
             logger.debug("Starting listener on {} ", args[0]);

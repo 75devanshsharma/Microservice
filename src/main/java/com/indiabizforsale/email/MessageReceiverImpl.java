@@ -1,6 +1,5 @@
 package com.indiabizforsale.email;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.pubsub.v1.PubsubMessage;
@@ -34,7 +33,7 @@ public class MessageReceiverImpl implements com.google.cloud.pubsub.v1.MessageRe
     public void receiveMessage(PubsubMessage message, AckReplyConsumer consumer) {
         EmailSender emailSender = new EmailSender();
         ObjectMapper mapper = new ObjectMapper();
-       // mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+        // mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
 
 
         String msg = message.getData().toStringUtf8();
