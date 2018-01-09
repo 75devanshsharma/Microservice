@@ -33,10 +33,13 @@ public class EmailSender {
      */
     public boolean checkEmailCount(PayLoad payLoad) throws IOException {
 
-        if (payLoad.getCount() < 2)
-            sendEmail(payLoad);
-        else
-            sendBulkEmail(payLoad);
+        if (payLoad.getTemplateId() != null) {
+            if (payLoad.getCount() < 2)
+                sendEmail(payLoad);
+            else
+                sendBulkEmail(payLoad);
+        } else
+            sendFormattedEmail(payLoad);
         return true;
     }
 
@@ -148,6 +151,40 @@ public class EmailSender {
             }
         }
         logger.info("Out of while loop.");
+    }
+
+    private void sendFormattedEmail(PayLoad payLoad) {
+        EmailValidationService emailValidationService = new EmailValidationService();
+        logger.info("Entered sendFormattedEmail");
+
+        if (emailValidationService.emailValidate(payLoad.getTo().get(0).getRawEmail())) {
+            SendEmailRequest sendEmailRequest = new SendEmailRequest();
+            sendEmailRequest.setDestination(new Destination().withToAddresses(payLoad.getTo().get(0).getRawEmail()));
+            sendEmailRequest.setSource(payLoad.getFrom());
+            sendEmailRequest.setMessage(new Message().withSubject(new Content().withData(payLoad.getSubject())
+                    .withCharset("UTF-8")).withBody(new Body().withText(new Content().withData(payLoad.getBodyText())
+                    .withCharset("UTF-8")).withHtml(new Content().withData(payLoad.getBodyText()).withCharset("UTF-8"))));
+
+            logger.info("{}",sendEmailRequest);
+            try {
+                logger.info("Attempting to send an email through Amazon SES by using the AWS SDK for Java...");
+
+                BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(awsAccessKey, awsSecretKey);
+
+                AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard().
+                        withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials)).withRegion("us-west-2").build();
+
+                SendEmailResult sendEmailResult = client.sendEmail(sendEmailRequest);
+
+                logger.info("Email sent.");
+                logger.info("{}", sendEmailResult.getMessageId());
+            } catch (Exception e) {
+                logger.warn("The email was not sent.");
+                logger.warn("Error message: " + e.getMessage());
+            }
+        } else {
+            logger.info("Email-format is invalid. Please check the format.");
+        }
     }
 
 }

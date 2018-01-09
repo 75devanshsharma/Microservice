@@ -12,6 +12,37 @@ public class PayLoad {
     private String from;
     private String templateId;
     private String fromName;
+    private String bodyHtml;
+    private String bodyText;
+    private String subject;
+
+
+    public String getBodyHtml() {
+        return bodyHtml;
+    }
+
+    public void setBodyHtml(String bodyHtml) {
+        this.bodyHtml = bodyHtml;
+    }
+
+    public String getBodyText() {
+        return bodyText;
+    }
+
+    public void setBodyText(String bodyText) {
+        this.bodyText = bodyText;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+
+
 
     /**
      * <h1>To get template data for a single recipient</h1>
