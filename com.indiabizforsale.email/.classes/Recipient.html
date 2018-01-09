@@ -1,0 +1,162 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Recipient</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.indiabizforsale.email</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Recipient (com.indiabizforsale.email)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Recipient</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    81.8%
+  </span>
+  <span class="absValue">
+    (9/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    89.5%
+  </span>
+  <span class="absValue">
+    (17/ 19)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package com.indiabizforsale.email;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import com.fasterxml.jackson.core.JsonParser;
+<i>4</i>&nbsp;import com.fasterxml.jackson.core.JsonProcessingException;
+<i>5</i>&nbsp;import com.fasterxml.jackson.databind.ObjectMapper;
+<i>6</i>&nbsp;import org.slf4j.LoggerFactory;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;
+<i>9</i>&nbsp;import java.util.Map;
+<i>10</i>&nbsp;
+<b class="fc"><i>11</i>&nbsp;public class Recipient {</b>
+<b class="fc"><i>12</i>&nbsp;    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Recipient.class);</b>
+<i>13</i>&nbsp;    private String email;
+<i>14</i>&nbsp;    private Map&lt;String, String&gt; templateData;
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;    public Map&lt;String, String&gt; getTemplateData() {
+<b class="fc"><i>18</i>&nbsp;        return templateData;</b>
+<i>19</i>&nbsp;    }
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    public void setTemplateData(Map&lt;String, String&gt; templateData) {
+<b class="fc"><i>22</i>&nbsp;        this.templateData = templateData;</b>
+<b class="fc"><i>23</i>&nbsp;    }</b>
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;    /**
+<i>26</i>&nbsp;     * &lt;h1&gt;To convert the template data of Map into JSon.&lt;/h1&gt;
+<i>27</i>&nbsp;     *
+<i>28</i>&nbsp;     * @return JSon
+<i>29</i>&nbsp;     * @throws JsonProcessingException
+<i>30</i>&nbsp;     */
+<i>31</i>&nbsp;    public String getTemplateDataJson() throws JsonProcessingException {
+<b class="fc"><i>32</i>&nbsp;        ObjectMapper objectMapper = new ObjectMapper();</b>
+<b class="fc"><i>33</i>&nbsp;        objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);</b>
+<i>34</i>&nbsp;
+<b class="fc"><i>35</i>&nbsp;        return objectMapper.writeValueAsString(templateData);</b>
+<i>36</i>&nbsp;    }
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    /**
+<i>39</i>&nbsp;     * &lt;p&gt;
+<i>40</i>&nbsp;     * This method checks if the name of the recipient is present or not in the template data.
+<i>41</i>&nbsp;     * If present then the email is sent along with the name in th form name &lt;email&gt; otherwise
+<i>42</i>&nbsp;     * the email is returned.
+<i>43</i>&nbsp;     * &lt;/p&gt;
+<i>44</i>&nbsp;     *
+<i>45</i>&nbsp;     * @return email along with name ,if available.
+<i>46</i>&nbsp;     */
+<i>47</i>&nbsp;    public String getEmail() {
+<b class="fc"><i>48</i>&nbsp;        if (getTemplateData().containsKey(&quot;name&quot;)) {</b>
+<b class="fc"><i>49</i>&nbsp;            String mail = getTemplateValue(&quot;name&quot;) + &quot; &lt;&quot; + getRawEmail() + &quot;&gt;&quot;;</b>
+<b class="fc"><i>50</i>&nbsp;            logger.info(&quot;Email format : {}&quot;, mail);</b>
+<b class="fc"><i>51</i>&nbsp;            return mail;</b>
+<i>52</i>&nbsp;        } else
+<b class="fc"><i>53</i>&nbsp;            return getRawEmail();</b>
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    public String getRawEmail() {
+<b class="fc"><i>57</i>&nbsp;        return email;</b>
+<i>58</i>&nbsp;    }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    private String getTemplateValue(String key) {
+<b class="fc"><i>61</i>&nbsp;        return templateData.get(key);</b>
+<i>62</i>&nbsp;    }
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    public void setEmail(String email) {
+<b class="fc"><i>65</i>&nbsp;        this.email = email;</b>
+<b class="fc"><i>66</i>&nbsp;    }</b>
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    public boolean checkKey() {
+<b class="nc"><i>69</i>&nbsp;        return templateData.containsKey(&quot;name&quot;);</b>
+<i>70</i>&nbsp;    }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    @Override
+<i>73</i>&nbsp;    public String toString() {
+<b class="nc"><i>74</i>&nbsp;        return &quot;Recipient{&quot; +</b>
+<i>75</i>&nbsp;                &quot;email=&#39;&quot; + email + &#39;\&#39;&#39; +
+<i>76</i>&nbsp;                &quot;, templateData=&quot; + templateData +
+<i>77</i>&nbsp;                &#39;}&#39;;
+<i>78</i>&nbsp;    }
+<i>79</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2018-01-06 15:43</div>
+</div>
+</body>
+</html>

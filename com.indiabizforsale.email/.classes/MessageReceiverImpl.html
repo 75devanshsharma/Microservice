@@ -1,0 +1,139 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: MessageReceiverImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.indiabizforsale.email</a> ]
+</div>
+
+<h1>Coverage Summary for Class: MessageReceiverImpl (com.indiabizforsale.email)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MessageReceiverImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 18)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package com.indiabizforsale.email;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import com.fasterxml.jackson.core.JsonParser;
+<i>4</i>&nbsp;import com.fasterxml.jackson.databind.ObjectMapper;
+<i>5</i>&nbsp;import com.google.cloud.pubsub.v1.AckReplyConsumer;
+<i>6</i>&nbsp;import com.google.pubsub.v1.PubsubMessage;
+<i>7</i>&nbsp;import com.indiabizforsale.email.exceptions.EventParserException;
+<i>8</i>&nbsp;import org.slf4j.Logger;
+<i>9</i>&nbsp;import org.slf4j.LoggerFactory;
+<i>10</i>&nbsp;
+<i>11</i>&nbsp;import java.io.IOException;
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;public class MessageReceiverImpl implements com.google.cloud.pubsub.v1.MessageReceiver {
+<b class="nc"><i>14</i>&nbsp;    private static final Logger logger = LoggerFactory.getLogger(MessageReceiverImpl.class);</b>
+<i>15</i>&nbsp;    private String runMode;
+<i>16</i>&nbsp;
+<b class="nc"><i>17</i>&nbsp;    MessageReceiverImpl(String runMode) {</b>
+<b class="nc"><i>18</i>&nbsp;        this.runMode = runMode;</b>
+<i>19</i>&nbsp;    }
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    /**
+<i>22</i>&nbsp;     * &lt;p&gt;
+<i>23</i>&nbsp;     * This method receives message from Google cloud PubSub in the JSon form.
+<i>24</i>&nbsp;     * The messages are stored in payload object and are sent to checkEmailCount
+<i>25</i>&nbsp;     * method for sending the email.
+<i>26</i>&nbsp;     * Acknowledgment is given back to the PubSub.
+<i>27</i>&nbsp;     * &lt;/p&gt;
+<i>28</i>&nbsp;     *
+<i>29</i>&nbsp;     * @param message
+<i>30</i>&nbsp;     * @param consumer
+<i>31</i>&nbsp;     */
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    @Override
+<i>34</i>&nbsp;    public void receiveMessage(PubsubMessage message, AckReplyConsumer consumer) {
+<b class="nc"><i>35</i>&nbsp;        EmailSender emailSender = new EmailSender();</b>
+<b class="nc"><i>36</i>&nbsp;        ObjectMapper mapper = new ObjectMapper();</b>
+<b class="nc"><i>37</i>&nbsp;        mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);</b>
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;
+<b class="nc"><i>40</i>&nbsp;        String msg = message.getData().toStringUtf8();</b>
+<b class="nc"><i>41</i>&nbsp;        logger.info(&quot;Message {} &quot; , msg);</b>
+<i>42</i>&nbsp;        try {
+<b class="nc"><i>43</i>&nbsp;            PayLoad payLoad = mapper.readValue(msg, PayLoad.class);</b>
+<b class="nc"><i>44</i>&nbsp;            if (runMode.equals(&quot;prod&quot;)) {</b>
+<b class="nc"><i>45</i>&nbsp;                emailSender.checkEmailCount(payLoad);</b>
+<i>46</i>&nbsp;            }
+<b class="nc"><i>47</i>&nbsp;        } catch (EventParserException e) {</b>
+<b class="nc"><i>48</i>&nbsp;            logger.error(&quot;Exception&quot;, e);</b>
+<b class="nc"><i>49</i>&nbsp;            consumer.ack();</b>
+<b class="nc"><i>50</i>&nbsp;        } catch (IOException e) {</b>
+<b class="nc"><i>51</i>&nbsp;            logger.error(&quot;IOException&quot;,e);</b>
+<b class="nc"><i>52</i>&nbsp;        }</b>
+<b class="nc"><i>53</i>&nbsp;        consumer.ack();</b>
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    }
+<i>56</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2018-01-06 15:43</div>
+</div>
+</body>
+</html>

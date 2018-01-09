@@ -1,0 +1,138 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: EmailServiceApplication</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.indiabizforsale.email</a> ]
+</div>
+
+<h1>Coverage Summary for Class: EmailServiceApplication (com.indiabizforsale.email)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EmailServiceApplication</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 26)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package com.indiabizforsale.email;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import com.google.cloud.pubsub.v1.Subscriber;
+<i>4</i>&nbsp;import org.slf4j.Logger;
+<i>5</i>&nbsp;import org.slf4j.LoggerFactory;
+<i>6</i>&nbsp;
+<b class="nc"><i>7</i>&nbsp;class EmailServiceApplication {</b>
+<i>8</i>&nbsp;    //To run all the email services.
+<b class="nc"><i>9</i>&nbsp;    private static final Logger logger = LoggerFactory.getLogger(EmailServiceApplication.class);</b>
+<i>10</i>&nbsp;    private String runMode;
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;    public static void main(String[] args) {
+<b class="nc"><i>13</i>&nbsp;        if (args.length == 1) {</b>
+<b class="nc"><i>14</i>&nbsp;            logger.debug(&quot;Starting listener on {} &quot;, args[0]);</b>
+<b class="nc"><i>15</i>&nbsp;            new EmailServiceApplication().listenAndProcess(args[0]);</b>
+<i>16</i>&nbsp;        } else {
+<b class="nc"><i>17</i>&nbsp;            logger.error(&quot;Provide subscription name and mode : java -jar app.jar [subscriptionName]&quot;);</b>
+<i>18</i>&nbsp;        }
+<i>19</i>&nbsp;    }
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    private void listenAndProcess(String subscription) {
+<b class="nc"><i>22</i>&nbsp;        assignRunMode();</b>
+<b class="nc"><i>23</i>&nbsp;        logger.info(&quot;Running Application in {}&quot;, runMode);</b>
+<b class="nc"><i>24</i>&nbsp;        Subscriber subscriber = null;</b>
+<b class="nc"><i>25</i>&nbsp;        PubSubSubscriber pubSubSubscriber = new PubSubSubscriber(subscription, runMode);</b>
+<i>26</i>&nbsp;        try {
+<b class="nc"><i>27</i>&nbsp;            subscriber = pubSubSubscriber.getSubscriber();</b>
+<b class="nc"><i>28</i>&nbsp;            pubSubSubscriber.startSubscriber(subscriber);</b>
+<b class="nc"><i>29</i>&nbsp;            synchronized (this) {</b>
+<b class="nc"><i>30</i>&nbsp;                wait();</b>
+<b class="nc"><i>31</i>&nbsp;            }</b>
+<b class="nc"><i>32</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>33</i>&nbsp;            logger.error(&quot;Exception&quot;, e);</b>
+<i>34</i>&nbsp;        } finally {
+<b class="nc"><i>35</i>&nbsp;            if (subscriber != null) {</b>
+<b class="nc"><i>36</i>&nbsp;                subscriber.stopAsync().awaitTerminated();</b>
+<i>37</i>&nbsp;            }
+<i>38</i>&nbsp;        }
+<i>39</i>&nbsp;    }
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    private void assignRunMode() {
+<i>42</i>&nbsp;        try {
+<b class="nc"><i>43</i>&nbsp;            runMode = System.getenv(&quot;SERVICE_MODE&quot;);</b>
+<b class="nc"><i>44</i>&nbsp;        } catch (NullPointerException | SecurityException e) {</b>
+<b class="nc"><i>45</i>&nbsp;            logger.warn(&quot;Runtime Environment not set, running in test mode&quot;, e);</b>
+<b class="nc"><i>46</i>&nbsp;            runMode = &quot;test&quot;;</b>
+<b class="nc"><i>47</i>&nbsp;        }</b>
+<b class="nc"><i>48</i>&nbsp;        if (runMode.isEmpty()) {</b>
+<b class="nc"><i>49</i>&nbsp;            runMode = &quot;test&quot;;</b>
+<i>50</i>&nbsp;        }
+<i>51</i>&nbsp;    }
+<i>52</i>&nbsp;}
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2018-01-06 15:43</div>
+</div>
+</body>
+</html>
