@@ -17,6 +17,17 @@ import java.util.Iterator;
 public class EmailSender {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(EmailSender.class);
 
+    public EmailSender()
+    {
+//        System.setProperty("AwsAccessKey",new ConfigurationService().getAccessKey());
+//        System.setProperty("AwsSecretKey", new ConfigurationService().getSecretKey());
+//        String AwsAccessKey = System.getProperty("AwsAccessKey");
+//        String AwsSecretKey = System.getProperty("AwsSecretKey");
+    }
+    String AwsAccessKey = System.getProperty("AwsAccessKey");
+    String AwsSecretKey = System.getProperty("AwsSecretKey");
+
+
     /**
      * <p>To count the number of recipient in the payload.
      * If the count is 1 then sendEmail method is used for sending emails
@@ -57,7 +68,7 @@ public class EmailSender {
             try {
 
                 logger.info("Attempting to send an email through Amazon SES by using the AWS SDK for Java...");
-                BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(EmailServiceApplication.AwsAccessKeyId, EmailServiceApplication.AccessKeySecret);
+                BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(AwsAccessKey,AwsSecretKey);
                 logger.info("{}", basicAWSCredentials);
                 AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()
                         .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials)).withRegion("us-west-2").build();
@@ -123,7 +134,7 @@ public class EmailSender {
 
                         logger.info("Attempting to send bulk email through Amazon SES by using the AWS SDK for Java...");
 
-                        BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(EmailServiceApplication.AwsAccessKeyId, EmailServiceApplication.AccessKeySecret);
+                        BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(AwsAccessKey,AwsSecretKey);
 
                         AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()
                                 .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials)).withRegion("us-west-2").build();

@@ -11,6 +11,8 @@ import java.util.Map;
 public class EmailSenderTest {
     @Test
     public void emailTest() throws IOException {
+        System.setProperty("AwsAccessKey",new ConfigurationService().getAccessKey());
+        System.setProperty("AwsSecretKey", new ConfigurationService().getSecretKey());
         EmailSender emailSender = new EmailSender();
         PayLoad payLoad = new PayLoad();
         ArrayList<Recipient> to = new ArrayList<>();
@@ -30,6 +32,8 @@ public class EmailSenderTest {
 
     @Test
     public void bulkEmailTest() throws IOException {
+        System.setProperty("AwsAccessKey",new ConfigurationService().getAccessKey());
+        System.setProperty("AwsSecretKey", new ConfigurationService().getSecretKey());
         EmailSender emailSender = new EmailSender();
         PayLoad payLoad = new PayLoad();
         Recipient recipient;
