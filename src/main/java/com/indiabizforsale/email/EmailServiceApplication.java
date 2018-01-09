@@ -12,7 +12,7 @@ class EmailServiceApplication {
 
     public static void main(String[] args) {
 
-        new ConfigurationService().SetEmailCredentials();
+        new ConfigurationService().setEmailCredentials();
 
         if (args.length == 1) {
             logger.debug("Starting listener on {} ", args[0]);

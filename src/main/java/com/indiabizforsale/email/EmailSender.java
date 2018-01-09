@@ -18,8 +18,8 @@ public class EmailSender {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(EmailSender.class);
 
 
-    private String AwsAccessKey = System.getProperty("AwsAccessKey");
-    private String AwsSecretKey = System.getProperty("AwsSecretKey");
+    private String awsAccessKey = System.getProperty("AwsAccessKey");
+    private String awsSecretKey = System.getProperty("AwsSecretKey");
 
 
     /**
@@ -62,7 +62,7 @@ public class EmailSender {
             try {
 
                 logger.info("Attempting to send an email through Amazon SES by using the AWS SDK for Java...");
-                BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(AwsAccessKey, AwsSecretKey);
+                BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(awsAccessKey, awsSecretKey);
                 logger.info("{}", basicAWSCredentials);
                 AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()
                         .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials)).withRegion("us-west-2").build();
@@ -128,7 +128,7 @@ public class EmailSender {
 
                         logger.info("Attempting to send bulk email through Amazon SES by using the AWS SDK for Java...");
 
-                        BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(AwsAccessKey, AwsSecretKey);
+                        BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(awsAccessKey, awsSecretKey);
 
                         AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()
                                 .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials)).withRegion("us-west-2").build();

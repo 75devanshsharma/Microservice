@@ -14,7 +14,7 @@ public class EmailSenderTest {
 
     @Before
     public void setEmailCredential() {
-        new ConfigurationService().SetEmailCredentials();
+        new ConfigurationService().setEmailCredentials();
     }
 
     @Test

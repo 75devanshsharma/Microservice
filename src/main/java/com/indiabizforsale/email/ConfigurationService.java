@@ -42,7 +42,7 @@ public class ConfigurationService {
             return "Secret key is null";
     }
 
-    public void SetEmailCredentials() {
+    public void setEmailCredentials() {
         System.setProperty("AwsAccessKey", new ConfigurationService().getAccessKey());
         System.setProperty("AwsSecretKey", new ConfigurationService().getSecretKey());
     }
