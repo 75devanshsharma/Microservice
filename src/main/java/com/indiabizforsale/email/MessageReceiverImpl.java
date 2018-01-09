@@ -34,7 +34,7 @@ public class MessageReceiverImpl implements com.google.cloud.pubsub.v1.MessageRe
     public void receiveMessage(PubsubMessage message, AckReplyConsumer consumer) {
         EmailSender emailSender = new EmailSender();
         ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+       // mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
 
 
         String msg = message.getData().toStringUtf8();

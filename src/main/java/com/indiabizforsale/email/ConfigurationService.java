@@ -11,7 +11,7 @@ public class ConfigurationService {
     private String accessKeyId;
     private String secretAccessKey;
 
-    public void getCredentials() {
+    private void getCredentials() {
 
         Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
 
@@ -27,10 +27,18 @@ public class ConfigurationService {
     }
 
     public String getAccessKey() {
+        getCredentials();
+        logger.info(accessKeyId);
         return accessKeyId;
+
     }
 
     public String getSecretKey() {
+        getCredentials();
+        logger.info(secretAccessKey);
+        if(secretAccessKey!=null)
         return secretAccessKey;
+        else
+            return "Secret key is null";
     }
 }
