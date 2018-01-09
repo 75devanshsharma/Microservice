@@ -17,7 +17,7 @@ public class ConfigurationService {
 
         StructuredQuery<Entity> query = Query.newEntityQueryBuilder()
                 .setKind("credential")
-                .setFilter(StructuredQuery.PropertyFilter.eq("Type", "AwsSesCredential"))
+                .setFilter(StructuredQuery.PropertyFilter.eq("type", "AwsSesCredential"))
                 .build();
 
         QueryResults<Entity> queryResults = datastore.run(query);
