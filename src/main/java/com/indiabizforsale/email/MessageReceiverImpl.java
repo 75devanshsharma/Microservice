@@ -20,7 +20,7 @@ public class MessageReceiverImpl implements com.google.cloud.pubsub.v1.MessageRe
     /**
      * <p>
      * This method receives message from Google cloud PubSub in the JSon form.
-     * The messages are stored in payload object and are sent to checkEmailCount
+     * The messages are stored in payload object and are sent to sendEmail
      * method for sending the email.
      * Acknowledgment is given back to the PubSub.
      * </p>
@@ -39,7 +39,7 @@ public class MessageReceiverImpl implements com.google.cloud.pubsub.v1.MessageRe
         try {
             PayLoad payLoad = mapper.readValue(msg, PayLoad.class);
             if (runMode.equals("prod")) {
-                emailSender.checkEmailCount(payLoad);
+                emailSender.sendEmail(payLoad);
             }
         } catch (EventParserException e) {
             logger.error("Exception", e);
