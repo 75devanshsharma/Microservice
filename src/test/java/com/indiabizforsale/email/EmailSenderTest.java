@@ -76,6 +76,26 @@ public class EmailSenderTest {
         Assert.assertTrue(emailSender.checkEmailCount(payLoad));
     }
 
+    @Test
+    public void sendBulkFormattedEmailTest() throws IOException {
+        EmailSender emailSender = new EmailSender();
+        PayLoad payLoad = new PayLoad();
+        Recipient recipient;
+        ArrayList<Recipient> to = new ArrayList<>();
+        for (int i = 0; i < 25; i++) {
+            recipient = new Recipient();
+            recipient.setEmail("success@simulator.amazonses.com");
+            to.add(i, recipient);
+        }
+        payLoad.setTo(to);
+        payLoad.setSubject("Hello User");
+        payLoad.setBodyHtml("This message body contains HTML formatting. Links like......");
+        payLoad.setBodyText("Hi user. Hope you are doing good. This is body text.");
+        payLoad.setFrom("devansh@indiabizforsale.com");
+        payLoad.setFromName("Dev");
+        Assert.assertTrue(emailSender.checkEmailCount(payLoad));
+    }
+
     @After
     public void removeEmailCredentials() {
         System.clearProperty("AwsAccessKey");

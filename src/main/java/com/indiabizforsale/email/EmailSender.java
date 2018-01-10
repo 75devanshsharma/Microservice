@@ -38,8 +38,10 @@ public class EmailSender {
                 sendEmail(payLoad);
             else
                 sendBulkEmail(payLoad);
-        } else
+        } else if(payLoad.getCount()<2)
             sendFormattedEmail(payLoad);
+        else
+            sendBulkFormattedEmail(payLoad);
         return true;
     }
 
@@ -185,6 +187,64 @@ public class EmailSender {
         } else {
             logger.info("Email-format is invalid. Please check the format.");
         }
+    }
+
+    public void sendBulkFormattedEmail(PayLoad payLoad)
+    {
+        logger.info("Entered sendBulkFormattedEmail");
+        ArrayList<Recipient> arrayList = payLoad.getTo();
+        int count = 0;
+        SendEmailRequest sendEmailRequest = new SendEmailRequest();
+        sendEmailRequest.withSource(payLoad.getFrom());
+        sendEmailRequest.setMessage(new Message().withSubject(new Content().withData(payLoad.getSubject())
+                .withCharset("UTF-8")).withBody(new Body().withText(new Content().withData(payLoad.getBodyText())
+                .withCharset("UTF-8")).withHtml(new Content().withData(payLoad.getBodyText()).withCharset("UTF-8"))));
+        Collection<String> c;
+        Destination destination = new Destination();
+        EmailValidationService emailValidationService = new EmailValidationService();
+        Iterator itr = arrayList.iterator();
+
+        while (itr.hasNext()) {
+            Recipient next = (Recipient) itr.next();
+            if (emailValidationService.emailValidate(next.getRawEmail())) {
+                logger.info("Entered if");
+                c = new ArrayList<>();
+                c.add(next.getRawEmail());
+                count++;
+                itr.remove();
+                if ((count < 20) && (itr.hasNext()))
+                    continue;
+                else {
+                    logger.info("Count is {}", count);
+                    logger.info("Entered else");
+                    logger.info("{}", c);
+                    destination.withToAddresses(c);
+                    sendEmailRequest.withDestination(destination);
+
+                    try {
+
+                        logger.info("Attempting to send bulk email through Amazon SES by using the AWS SDK for Java...");
+
+                        BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(awsAccessKey, awsSecretKey);
+
+                        AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()
+                                .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials)).withRegion("us-west-2").build();
+
+                       SendEmailResult sendEmailResult = client.sendEmail(sendEmailRequest);
+                        logger.info("{}", sendEmailResult.getMessageId());
+                        logger.info("Email sent!");
+                    } catch (Exception ex) {
+
+                        logger.warn("The email was not sent.");
+                        logger.warn("Error message: " + ex.getMessage());
+                    }
+                    count = 0;
+                }
+            } else {
+                logger.debug("Wrong email format. Email ignored.");
+            }
+        }
+        logger.info("Out of while loop.");
     }
 
 }
