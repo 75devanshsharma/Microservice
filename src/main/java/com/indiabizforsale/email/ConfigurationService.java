@@ -4,6 +4,8 @@ package com.indiabizforsale.email;
 import com.google.cloud.datastore.*;
 import org.slf4j.LoggerFactory;
 
+import static java.util.Optional.ofNullable;
+
 
 public class ConfigurationService {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ConfigurationService.class);
@@ -27,19 +29,18 @@ public class ConfigurationService {
     }
 
     private String getAccessKey() {
-        getCredentials();
+        if (!ofNullable(accessKeyId).isPresent())
+            getCredentials();
         logger.info(accessKeyId);
         return accessKeyId;
 
     }
 
     private String getSecretKey() {
-        getCredentials();
+        if (!ofNullable(secretAccessKey).isPresent())
+            getCredentials();
         logger.info(secretAccessKey);
-        if (secretAccessKey != null)
-            return secretAccessKey;
-        else
-            return "Secret key is null";
+        return secretAccessKey;
     }
 
     public void setEmailCredentials() {
