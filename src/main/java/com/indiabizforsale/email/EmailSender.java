@@ -20,8 +20,8 @@ public class EmailSender {
 
     private String awsAccessKey = System.getProperty("AwsAccessKey");
     private String awsSecretKey = System.getProperty("AwsSecretKey");
-    private final static String withRegion = "us-west-2";
-    private final static String withCharSet = "UTF-8" ;
+    private static final String WITHREGION = "us-west-2";
+    private static final String WITHCHARSET = "UTF-8" ;
 
 
     /**
@@ -72,7 +72,7 @@ public class EmailSender {
                 BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(awsAccessKey, awsSecretKey);
                 logger.info("{}", basicAWSCredentials);
                 AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()
-                        .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials)).withRegion(withRegion).build();
+                        .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials)).withRegion(WITHREGION).build();
 
                 SendTemplatedEmailResult sr = client.sendTemplatedEmail(sendTemplatedEmailRequest);
                 logger.info(sr.getMessageId());
@@ -138,7 +138,7 @@ public class EmailSender {
                         BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(awsAccessKey, awsSecretKey);
 
                         AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()
-                                .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials)).withRegion(withRegion).build();
+                                .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials)).withRegion(WITHREGION).build();
 
                         SendBulkTemplatedEmailResult sendBulkTemplatedEmailResult = client.sendBulkTemplatedEmail(sendBulkTemplatedEmailRequest);
                         logger.info("{}", sendBulkTemplatedEmailResult.getStatus());
@@ -172,8 +172,8 @@ public class EmailSender {
             sendEmailRequest.setDestination(new Destination().withToAddresses(payLoad.getTo().get(0).getRawEmail()));
             sendEmailRequest.setSource(payLoad.getFrom());
             sendEmailRequest.setMessage(new Message().withSubject(new Content().withData(payLoad.getSubject())
-                    .withCharset(withCharSet)).withBody(new Body().withText(new Content().withData(payLoad.getBodyText())
-                    .withCharset(withCharSet)).withHtml(new Content().withData(payLoad.getBodyText()).withCharset(withCharSet))));
+                    .withCharset(WITHCHARSET)).withBody(new Body().withText(new Content().withData(payLoad.getBodyText())
+                    .withCharset(WITHCHARSET)).withHtml(new Content().withData(payLoad.getBodyText()).withCharset(WITHCHARSET))));
 
             logger.info("{}", sendEmailRequest);
             try {
@@ -182,7 +182,7 @@ public class EmailSender {
                 BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(awsAccessKey, awsSecretKey);
 
                 AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard().
-                        withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials)).withRegion(withRegion).build();
+                        withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials)).withRegion(WITHREGION).build();
 
                 SendEmailResult sendEmailResult = client.sendEmail(sendEmailRequest);
 
@@ -212,8 +212,8 @@ public class EmailSender {
         SendEmailRequest sendEmailRequest = new SendEmailRequest();
         sendEmailRequest.withSource(payLoad.getFrom());
         sendEmailRequest.setMessage(new Message().withSubject(new Content().withData(payLoad.getSubject())
-                .withCharset(withCharSet)).withBody(new Body().withText(new Content().withData(payLoad.getBodyText())
-                .withCharset(withCharSet)).withHtml(new Content().withData(payLoad.getBodyText()).withCharset(withCharSet))));
+                .withCharset(WITHCHARSET)).withBody(new Body().withText(new Content().withData(payLoad.getBodyText())
+                .withCharset(WITHCHARSET)).withHtml(new Content().withData(payLoad.getBodyText()).withCharset(WITHCHARSET))));
         Collection<String> c;
         Destination destination = new Destination();
         EmailValidationService emailValidationService = new EmailValidationService();
@@ -243,7 +243,7 @@ public class EmailSender {
                         BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(awsAccessKey, awsSecretKey);
 
                         AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()
-                                .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials)).withRegion(withRegion).build();
+                                .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials)).withRegion(WITHREGION).build();
 
                        SendEmailResult sendEmailResult = client.sendEmail(sendEmailRequest);
                         logger.info("{}", sendEmailResult.getMessageId());
