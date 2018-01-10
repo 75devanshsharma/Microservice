@@ -155,6 +155,12 @@ public class EmailSender {
         logger.info("Out of while loop.");
     }
 
+
+    /**
+     * <h4> This method is used for sending formatted email to single recipient.</h4>
+     *
+     * @param payLoad
+     */
     private void sendFormattedEmail(PayLoad payLoad) {
         EmailValidationService emailValidationService = new EmailValidationService();
         logger.info("Entered sendFormattedEmail");
@@ -189,7 +195,14 @@ public class EmailSender {
         }
     }
 
-    public void sendBulkFormattedEmail(PayLoad payLoad)
+    /**
+     * <p> This method is used for sending formatted email to many number of recipients.
+     * The destinations are stored in collection and are then passed to destination object.
+     * Batching of 20 emails per request is done.</p>
+     *
+     * @param payLoad
+     */
+    private void sendBulkFormattedEmail(PayLoad payLoad)
     {
         logger.info("Entered sendBulkFormattedEmail");
         ArrayList<Recipient> arrayList = payLoad.getTo();
