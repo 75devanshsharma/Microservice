@@ -1,9 +1,5 @@
 package com.indiabizforsale.email;
 
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
-import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
 import com.amazonaws.services.simpleemail.model.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.LoggerFactory;
@@ -18,13 +14,12 @@ import static java.lang.String.format;
 
 public class EmailSender {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(EmailSender.class);
-
-
-    private final String awsAccessKey = System.getProperty("AwsAccessKey");
-    private final String awsSecretKey = System.getProperty("AwsSecretKey");
-    private static final String WITHREGION = "us-west-2";
     private static final String WITHCHARSET = "UTF-8";
+    private AmazonSimpleEmailServiceClient client;
 
+    public EmailSender(AmazonSimpleEmailServiceClient client) {
+        this.client = client;
+    }
 
     /**
      * <p>To count the number of recipient in the payload.
@@ -38,11 +33,11 @@ public class EmailSender {
     public void sendEmail(PayLoad payLoad) throws IOException {
 
         if (payLoad.getTemplateId() != null) {
-            if (payLoad.getCount() < 2)
+            if (payLoad.getToAddressCount() < 2)
                 sendSingleEmail(payLoad);
             else
                 sendBulkEmail(payLoad);
-        } else if (payLoad.getCount() < 2)
+        } else if (payLoad.getToAddressCount() < 2)
             sendSingleFormattedEmail(payLoad);
         else
             sendBulkFormattedEmail(payLoad);
@@ -67,12 +62,9 @@ public class EmailSender {
             sendTemplatedEmailRequest.setTemplate(payLoad.getTemplateId());
             sendTemplatedEmailRequest.setTemplateData(payLoad.getFirstTemplate());
 
-            logger.info("{}",awsAccessKey);
-
             try {
                 logger.info("Attempting to send an email through Amazon SES by using the AWS SDK for Java...");
-                AmazonSimpleEmailService client = getAmazonSimpleEmailService();
-                SendTemplatedEmailResult sr = client.sendTemplatedEmail(sendTemplatedEmailRequest);
+                SendTemplatedEmailResult sr = client.getAmazonSimpleEmailService().sendTemplatedEmail(sendTemplatedEmailRequest);
                 logger.info(sr.getMessageId());
                 logger.info("Email sent!");
             } catch (Exception ex) {
@@ -102,7 +94,6 @@ public class EmailSender {
         Collection<BulkEmailDestination> bulkEmailDestinations = new ArrayList<>();
         EmailValidationService emailValidationService = new EmailValidationService();
         Iterator itr = recipients.iterator();
-        AmazonSimpleEmailService client = getAmazonSimpleEmailService();
 
         int count = 0;
         while (itr.hasNext()) {
@@ -124,7 +115,7 @@ public class EmailSender {
                     sendBulkTemplatedEmailRequest.setDefaultTemplateData("{}");
                     try {
                         logger.info("Attempting to send bulk emails through Amazon SES by using the AWS SDK for Java...");
-                        SendBulkTemplatedEmailResult sendBulkTemplatedEmailResult = client.sendBulkTemplatedEmail(sendBulkTemplatedEmailRequest);
+                        SendBulkTemplatedEmailResult sendBulkTemplatedEmailResult = client.getAmazonSimpleEmailService().sendBulkTemplatedEmail(sendBulkTemplatedEmailRequest);
                         logger.info("{}", sendBulkTemplatedEmailResult.getStatus());
                         logger.info("Email sent..");
                     } catch (Exception ex) {
@@ -138,12 +129,6 @@ public class EmailSender {
             }
         }
         logger.info("Out of while loop.");
-    }
-
-    private AmazonSimpleEmailService getAmazonSimpleEmailService() {
-        BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(awsAccessKey, awsSecretKey);
-        return AmazonSimpleEmailServiceClientBuilder.standard()
-                .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials)).withRegion(WITHREGION).build();
     }
 
 
@@ -168,13 +153,12 @@ public class EmailSender {
             try {
                 logger.info("Attempting to send an email through Amazon SES by using the AWS SDK for Java....");
 
-                AmazonSimpleEmailService client = getAmazonSimpleEmailService();
-                SendEmailResult sendEmailResult = client.sendEmail(sendEmailRequest);
+                SendEmailResult sendEmailResult = client.getAmazonSimpleEmailService().sendEmail(sendEmailRequest);
 
                 logger.info("Email sent..");
                 logger.info("{}", sendEmailResult.getMessageId());
             } catch (Exception e) {
-                logger.error("The email was not sent!",e);
+                logger.error("The email was not sent!", e);
             }
         } else {
             logger.info("Email-format is invalid. Please check the format.");
@@ -190,41 +174,40 @@ public class EmailSender {
      */
     private void sendBulkFormattedEmail(PayLoad payLoad) {
         logger.info("Entered sendBulkFormattedEmail");
-        ArrayList<Recipient> arrayList = payLoad.getTo();
+        ArrayList<Recipient> recipients = payLoad.getTo();
         SendEmailRequest sendEmailRequest = new SendEmailRequest();
         sendEmailRequest.withSource(payLoad.getFrom());
         sendEmailRequest.setMessage(new Message().withSubject(new Content().withData(payLoad.getSubject())
                 .withCharset(WITHCHARSET)).withBody(new Body().withText(new Content().withData(payLoad.getBodyText())
                 .withCharset(WITHCHARSET)).withHtml(new Content().withData(payLoad.getBodyText()).withCharset(WITHCHARSET))));
-        Collection<String> collection = new ArrayList<>();
+        Collection<String> addresses = new ArrayList<>();
         Destination destination = new Destination();
         EmailValidationService emailValidationService = new EmailValidationService();
-        Iterator itr = arrayList.iterator();
+        Iterator itr = recipients.iterator();
         int count = 0;
         while (itr.hasNext()) {
             Recipient next = (Recipient) itr.next();
             if (emailValidationService.emailValidate(next.getRawEmail())) {
                 logger.info("Entered if..");
-                collection.add(next.getRawEmail());
+                addresses.add(next.getRawEmail());
                 count++;
                 if (count >= 20 || !itr.hasNext()) {
                     logger.info("Count is {}", count);
                     logger.info("Entered else..");
-                    logger.info("{}", collection);
-                    destination.withToAddresses(collection);
+                    logger.info("{}", addresses);
+                    destination.withToAddresses(addresses);
                     sendEmailRequest.withDestination(destination);
 
                     try {
                         logger.info("Attempting to send bulk emails through Amazon SES by using the AWS SDK for Java....");
-                        AmazonSimpleEmailService client = getAmazonSimpleEmailService();
-                        SendEmailResult sendEmailResult = client.sendEmail(sendEmailRequest);
+                        SendEmailResult sendEmailResult = client.getAmazonSimpleEmailService().sendEmail(sendEmailRequest);
                         logger.info("{}", sendEmailResult.getMessageId());
                         logger.info("Email sent.....");
                     } catch (Exception ex) {
-                        logger.error("The email was not sent..!",ex);
+                        logger.error("The email was not sent..!", ex);
                     }
                     count = 0;
-                    collection.clear();
+                    addresses.clear();
                 }
             } else {
                 logger.debug(format("Wrong email format. Email is ignored - %s", next.getRawEmail()));

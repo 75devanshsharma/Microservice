@@ -59,7 +59,7 @@ public class PayLoad {
     }
 
 
-    public int getCount() {
+    public int getToAddressCount() {
         int count;
         count = this.getTo().size();
         return count;

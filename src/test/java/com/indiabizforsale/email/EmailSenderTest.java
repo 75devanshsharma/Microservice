@@ -1,49 +1,58 @@
 package com.indiabizforsale.email;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
+import com.amazonaws.services.simpleemail.model.SendTemplatedEmailRequest;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-
 public class EmailSenderTest {
 
-    private EmailSender emailSender = new EmailSender();
+
+    @Mock
+    private AmazonSimpleEmailServiceClient emailServiceClient;
+    @Mock
+    private AmazonSimpleEmailService amazonSimpleEmailService;
+    private EmailSender emailSender;
+
+    @Before
+    public void setup() {
+        MockitoAnnotations.initMocks(this);
+        emailSender = new EmailSender(emailServiceClient);
+        Mockito.when(emailServiceClient.getAmazonSimpleEmailService()).thenReturn(amazonSimpleEmailService);
+    }
 
     @Test
-    public void sendSingleEmail() throws JsonProcessingException {
-
-        new ConfigurationService().setEmailCredentials();
+    public void sendSingleEmail() {
         PayLoad payLoad = new PayLoad();
         ArrayList<Recipient> to = new ArrayList<>();
-        Map<String, String> templateData = new HashMap<>();
         Recipient recipient = new Recipient();
-        templateData.put("name", "Dev");
-        assertEquals(true, templateData.containsValue("Dev"));
         recipient.setEmail("devansh@indiabizforsale.com");
-        recipient.setTemplateData(templateData);
-        assertEquals("devansh@indiabizforsale.com", recipient.getRawEmail());
-        assertEquals("{\"name\":\"Dev\"}", recipient.getTemplateDataJson());
-        assertEquals(true, to.add(recipient));
+        recipient.setTemplateData(getTemplateData());
+        to.add(recipient);
         payLoad.setTo(to);
         payLoad.setFrom("devansh@indiabizforsale.com");
         payLoad.setFromName("Devansh");
         payLoad.setTemplateId("MyTemplate1");
-        assertEquals("Dev <devansh@indiabizforsale.com>", payLoad.getTo().get(0).getEmail());
-        assertEquals("devansh@indiabizforsale.com", payLoad.getRawFrom());
-        assertEquals("Devansh", payLoad.getFromName());
-        assertEquals("MyTemplate1", payLoad.getTemplateId());
         try {
             emailSender.sendEmail(payLoad);
+            Mockito.verify(amazonSimpleEmailService, Mockito.times(1)).sendTemplatedEmail(Mockito.any(SendTemplatedEmailRequest.class));
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
-
+    private Map<String, String> getTemplateData() {
+        Map<String, String> templateData = new HashMap<>();
+        templateData.put("name", "Dev");
+        return templateData;
     }
 
     @Test

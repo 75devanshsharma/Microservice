@@ -31,7 +31,7 @@ public class MessageReceiverImpl implements com.google.cloud.pubsub.v1.MessageRe
 
     @Override
     public void receiveMessage(PubsubMessage message, AckReplyConsumer consumer) {
-        EmailSender emailSender = new EmailSender();
+        EmailSender emailSender = new EmailSender(new AmazonSimpleEmailServiceClient());
         ObjectMapper mapper = new ObjectMapper();
 
         String msg = message.getData().toStringUtf8();
