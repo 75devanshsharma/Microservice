@@ -44,7 +44,7 @@ public class ConfigurationService {
     }
 
     public void setEmailCredentials() {
-        System.setProperty("AwsAccessKey", new ConfigurationService().getAccessKey());
-        System.setProperty("AwsSecretKey", new ConfigurationService().getSecretKey());
+        System.setProperty("AwsAccessKey",getAccessKey());
+        System.setProperty("AwsSecretKey", getSecretKey());
     }
 }

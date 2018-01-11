@@ -20,8 +20,8 @@ public class EmailSender {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(EmailSender.class);
 
 
-    private String awsAccessKey = System.getProperty("AwsAccessKey");
-    private String awsSecretKey = System.getProperty("AwsSecretKey");
+    private final String awsAccessKey = System.getProperty("AwsAccessKey");
+    private final String awsSecretKey = System.getProperty("AwsSecretKey");
     private static final String WITHREGION = "us-west-2";
     private static final String WITHCHARSET = "UTF-8";
 
@@ -66,6 +66,8 @@ public class EmailSender {
             sendTemplatedEmailRequest.setSource(payLoad.getFrom());
             sendTemplatedEmailRequest.setTemplate(payLoad.getTemplateId());
             sendTemplatedEmailRequest.setTemplateData(payLoad.getFirstTemplate());
+
+            logger.info("{}",awsAccessKey);
 
             try {
                 logger.info("Attempting to send an email through Amazon SES by using the AWS SDK for Java...");
@@ -114,7 +116,6 @@ public class EmailSender {
                 bulkEmailDestination.setReplacementTemplateData(recipient.getTemplateDataJson());
                 bulkEmailDestinations.add(bulkEmailDestination);
                 count++;
-                itr.remove();
                 if (count >= 20 || !itr.hasNext()) {
                     logger.info("Count is {}", count);
                     logger.info("Entered else");
@@ -130,7 +131,7 @@ public class EmailSender {
                         logger.error("The email was not sent!!!", ex);
                     }
                     count = 0;
-                    //TODO: shouldnt you reset bulkEmailDestinations ?
+                    bulkEmailDestinations.clear();
                 }
             } else {
                 logger.debug(format("Wrong email format. Email is ignored - %s", recipient.getRawEmail()));
@@ -173,8 +174,7 @@ public class EmailSender {
                 logger.info("Email sent..");
                 logger.info("{}", sendEmailResult.getMessageId());
             } catch (Exception e) {
-                logger.warn("The email was not sent!");
-                logger.warn("Error message is " + e.getMessage());
+                logger.error("The email was not sent!",e);
             }
         } else {
             logger.info("Email-format is invalid. Please check the format.");
@@ -191,30 +191,27 @@ public class EmailSender {
     private void sendBulkFormattedEmail(PayLoad payLoad) {
         logger.info("Entered sendBulkFormattedEmail");
         ArrayList<Recipient> arrayList = payLoad.getTo();
-        int count = 0;
         SendEmailRequest sendEmailRequest = new SendEmailRequest();
         sendEmailRequest.withSource(payLoad.getFrom());
         sendEmailRequest.setMessage(new Message().withSubject(new Content().withData(payLoad.getSubject())
                 .withCharset(WITHCHARSET)).withBody(new Body().withText(new Content().withData(payLoad.getBodyText())
                 .withCharset(WITHCHARSET)).withHtml(new Content().withData(payLoad.getBodyText()).withCharset(WITHCHARSET))));
-        Collection<String> c;
+        Collection<String> collection = new ArrayList<>();
         Destination destination = new Destination();
         EmailValidationService emailValidationService = new EmailValidationService();
         Iterator itr = arrayList.iterator();
-
+        int count = 0;
         while (itr.hasNext()) {
             Recipient next = (Recipient) itr.next();
             if (emailValidationService.emailValidate(next.getRawEmail())) {
                 logger.info("Entered if..");
-                c = new ArrayList<>();
-                c.add(next.getRawEmail());
+                collection.add(next.getRawEmail());
                 count++;
-                itr.remove();
                 if (count >= 20 || !itr.hasNext()) {
                     logger.info("Count is {}", count);
                     logger.info("Entered else..");
-                    logger.info("{}", c);
-                    destination.withToAddresses(c);
+                    logger.info("{}", collection);
+                    destination.withToAddresses(collection);
                     sendEmailRequest.withDestination(destination);
 
                     try {
@@ -224,13 +221,13 @@ public class EmailSender {
                         logger.info("{}", sendEmailResult.getMessageId());
                         logger.info("Email sent.....");
                     } catch (Exception ex) {
-                        logger.warn("The email was not sent..!");
-                        logger.warn("Error message:- " + ex.getMessage());
+                        logger.error("The email was not sent..!",ex);
                     }
                     count = 0;
+                    collection.clear();
                 }
             } else {
-                logger.debug("Wrong email format. Email ignored.");
+                logger.debug(format("Wrong email format. Email is ignored - %s", next.getRawEmail()));
             }
         }
         logger.info("Out of while loop !");
