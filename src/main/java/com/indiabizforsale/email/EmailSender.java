@@ -18,8 +18,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-import static java.lang.String.format;
-
 
 public class EmailSender {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(EmailSender.class);
@@ -28,7 +26,7 @@ public class EmailSender {
 
     public EmailSender(AmazonSimpleEmailServiceClient client) {
         this.client = client;
-        logger.info("{}",this.client);
+        logger.info("{}", this.client);
     }
 
     /**
@@ -246,7 +244,7 @@ public class EmailSender {
             template.process(model, stringWriter);
             message = stringWriter.toString();
         } catch (IOException | TemplateException e) {
-            e.printStackTrace();
+            logger.error("{}", e);
         }
         logger.info(message);
         return message;
