@@ -2,6 +2,8 @@ package com.indiabizforsale.email;
 
 import com.amazonaws.services.simpleemail.model.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.indiabizforsale.email.model.PayLoad;
+import com.indiabizforsale.email.model.Recipient;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;

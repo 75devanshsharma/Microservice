@@ -1,6 +1,7 @@
 package com.indiabizforsale.email;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.indiabizforsale.email.model.PayLoad;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 

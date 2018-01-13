@@ -4,6 +4,8 @@ import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.model.SendBulkTemplatedEmailRequest;
 import com.amazonaws.services.simpleemail.model.SendEmailRequest;
 import com.amazonaws.services.simpleemail.model.SendTemplatedEmailRequest;
+import com.indiabizforsale.email.model.PayLoad;
+import com.indiabizforsale.email.model.Recipient;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

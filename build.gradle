@@ -42,9 +42,7 @@ jacocoTestReport {
 
 sonarqube {
     properties {
-//        property "sonar.groovy.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
         property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
-//        property "sonar.binaries", "${project.buildDir}/classes"
-//        property "sonar.groovy.binaries", "${project.buildDir}/classes"
+        property "sonar.exclusions", "**/model"
     }
 }
