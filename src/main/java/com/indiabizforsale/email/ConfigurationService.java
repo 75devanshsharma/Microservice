@@ -9,6 +9,8 @@ import static java.util.Optional.ofNullable;
 
 public class ConfigurationService {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ConfigurationService.class);
+    public static final String AWS_ACCESS_KEY = "AwsAccessKey";
+    public static final String AWS_SECRET_KEY = "AwsSecretKey";
 
     private String accessKeyId;
     private String secretAccessKey;
@@ -44,8 +46,8 @@ public class ConfigurationService {
     }
 
     public void setEmailCredentials() {
-        System.setProperty("AwsAccessKey",getAccessKey());
-        System.setProperty("AwsSecretKey", getSecretKey());
+        System.setProperty(AWS_ACCESS_KEY,getAccessKey());
+        System.setProperty(AWS_SECRET_KEY, getSecretKey());
     }
 
 }
