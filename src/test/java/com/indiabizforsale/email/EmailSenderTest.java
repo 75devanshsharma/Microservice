@@ -6,6 +6,7 @@ import com.amazonaws.services.simpleemail.model.SendEmailRequest;
 import com.amazonaws.services.simpleemail.model.SendTemplatedEmailRequest;
 import com.indiabizforsale.email.model.PayLoad;
 import com.indiabizforsale.email.model.Recipient;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -126,6 +127,14 @@ public class EmailSenderTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void getTemplatedMessageTest()
+    {
+        PayLoad payLoad = new PayLoad();
+        payLoad.setBodyText("Hi ${name}.");
+        Assert.assertEquals("Hi Dev." , emailSender.getTemplatedMessage(getTemplateData(),payLoad.getBodyText()));
     }
 
 
