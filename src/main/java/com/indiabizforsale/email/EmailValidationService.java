@@ -13,7 +13,7 @@ public class EmailValidationService {
 //     * @param email
 //     * @return flag of type boolean
 //     */
-    public boolean emailValidate(String email) {
+    public boolean isValid(String email) {
         boolean flag = false;
         EmailValidator ev = EmailValidator.getInstance();
         if (ev.isValid(email)) {

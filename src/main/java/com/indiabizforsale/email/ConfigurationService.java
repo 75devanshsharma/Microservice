@@ -47,4 +47,5 @@ public class ConfigurationService {
         System.setProperty("AwsAccessKey",getAccessKey());
         System.setProperty("AwsSecretKey", getSecretKey());
     }
+
 }

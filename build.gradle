@@ -21,6 +21,8 @@ dependencies {
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.3'
     compile group: 'com.google.cloud', name: 'google-cloud-pubsub', version: '0.32.0-beta'
     compile group: 'com.google.cloud', name: 'google-cloud-datastore', version: '1.14.0'
+    compile group: 'org.freemarker', name: 'freemarker', version: '2.3.27-incubating'
+
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.13.0'
 
 

@@ -19,6 +19,7 @@ public class EmailSender {
 
     public EmailSender(AmazonSimpleEmailServiceClient client) {
         this.client = client;
+        logger.info("{}",this.client);
     }
 
     /**
@@ -55,7 +56,7 @@ public class EmailSender {
     private void sendSingleEmail(PayLoad payLoad) throws IOException {
         EmailValidationService emailValidationService = new EmailValidationService();
 
-        if (emailValidationService.emailValidate(payLoad.getTo().get(0).getRawEmail())) {
+        if (emailValidationService.isValid(payLoad.getTo().get(0).getRawEmail())) {
             SendTemplatedEmailRequest sendTemplatedEmailRequest = new SendTemplatedEmailRequest();
             sendTemplatedEmailRequest.setDestination(new Destination().withToAddresses(payLoad.getFirstEmail()));
             sendTemplatedEmailRequest.setSource(payLoad.getFrom());
@@ -98,7 +99,7 @@ public class EmailSender {
         int count = 0;
         while (itr.hasNext()) {
             Recipient recipient = (Recipient) itr.next();
-            if (emailValidationService.emailValidate(recipient.getRawEmail())) {
+            if (emailValidationService.isValid(recipient.getRawEmail())) {
                 logger.info("Entered if");
                 BulkEmailDestination bulkEmailDestination = new BulkEmailDestination();
                 Destination destination = new Destination();
@@ -141,12 +142,13 @@ public class EmailSender {
         EmailValidationService emailValidationService = new EmailValidationService();
         logger.info("Entered sendSingleFormattedEmail");
 
-        if (emailValidationService.emailValidate(payLoad.getTo().get(0).getRawEmail())) {
+        if (emailValidationService.isValid(payLoad.getTo().get(0).getRawEmail())) {
             SendEmailRequest sendEmailRequest = new SendEmailRequest();
             sendEmailRequest.setDestination(new Destination().withToAddresses(payLoad.getTo().get(0).getRawEmail()));
             sendEmailRequest.setSource(payLoad.getFrom());
             sendEmailRequest.setMessage(new Message().withSubject(new Content().withData(payLoad.getSubject())
-                    .withCharset(WITHCHARSET)).withBody(new Body().withText(new Content().withData(payLoad.getBodyText())
+                    .withCharset(WITHCHARSET)).withBody(new Body().withText(new Content().
+                    withData(payLoad.getBodyText())
                     .withCharset(WITHCHARSET)).withHtml(new Content().withData(payLoad.getBodyText()).withCharset(WITHCHARSET))));
 
             logger.info("{}", sendEmailRequest);
@@ -187,16 +189,18 @@ public class EmailSender {
         int count = 0;
         while (itr.hasNext()) {
             Recipient next = (Recipient) itr.next();
-            if (emailValidationService.emailValidate(next.getRawEmail())) {
+            if (emailValidationService.isValid(next.getRawEmail())) {
                 logger.info("Entered if..");
                 addresses.add(next.getRawEmail());
                 count++;
+
                 if (count >= 20 || !itr.hasNext()) {
                     logger.info("Count is {}", count);
                     logger.info("Entered else..");
                     logger.info("{}", addresses);
                     destination.withToAddresses(addresses);
                     sendEmailRequest.withDestination(destination);
+                    logger.info("{}", sendEmailRequest);
 
                     try {
                         logger.info("Attempting to send bulk emails through Amazon SES by using the AWS SDK for Java....");
@@ -215,5 +219,30 @@ public class EmailSender {
         }
         logger.info("Out of while loop !");
     }
-
 }
+
+
+//    public String getTemplatedMessage(Map<String, String> model, String bodyMessage) {
+//        String message = "";
+//        try {
+//            Configuration configuration = new Configuration(Configuration.VERSION_2_3_27);
+//
+//            StringTemplateLoader stringTemplateLoader = new StringTemplateLoader();
+//            stringTemplateLoader.putTemplate("myTemplate", bodyMessage);
+//            configuration.setTemplateLoader(stringTemplateLoader);
+//            configuration.setDefaultEncoding("UTF-8");
+//            configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+//
+//
+//            Template template = configuration.getTemplate("myTemplate");
+//            StringWriter stringWriter = new StringWriter();
+//            template.process(model, stringWriter);
+//            message = stringWriter.toString();
+//        } catch (IOException | TemplateException e) {
+//            e.printStackTrace();
+//        }
+//        logger.info(message);
+//        return message;
+//    }
+//
+//}

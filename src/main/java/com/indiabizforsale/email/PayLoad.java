@@ -106,4 +106,16 @@ public class PayLoad {
         return from;
     }
 
+    @Override
+    public String toString() {
+        return "PayLoad{" +
+                "to=" + to +
+                ", from='" + from + '\'' +
+                ", templateId='" + templateId + '\'' +
+                ", fromName='" + fromName + '\'' +
+                ", bodyHtml='" + bodyHtml + '\'' +
+                ", bodyText='" + bodyText + '\'' +
+                ", subject='" + subject + '\'' +
+                '}';
+    }
 }
