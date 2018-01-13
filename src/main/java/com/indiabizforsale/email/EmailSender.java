@@ -4,14 +4,19 @@ import com.amazonaws.services.simpleemail.model.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.indiabizforsale.email.model.PayLoad;
 import com.indiabizforsale.email.model.Recipient;
+import freemarker.cache.StringTemplateLoader;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateExceptionHandler;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-
-import static java.lang.String.format;
+import java.util.Map;
 
 
 public class EmailSender {
@@ -21,7 +26,7 @@ public class EmailSender {
 
     public EmailSender(AmazonSimpleEmailServiceClient client) {
         this.client = client;
-        logger.info("{}",this.client);
+        logger.info("{}", this.client);
     }
 
     /**
@@ -128,7 +133,7 @@ public class EmailSender {
                     bulkEmailDestinations.clear();
                 }
             } else {
-                logger.debug(format("Wrong email format. Email is ignored - %s", recipient.getRawEmail()));
+                logger.debug("Wrong email format. Email is ignored ", recipient.getRawEmail());
             }
         }
         logger.info("Out of while loop.");
@@ -216,35 +221,33 @@ public class EmailSender {
                     addresses.clear();
                 }
             } else {
-                logger.debug(format("Wrong email format. Email is ignored - %s", next.getRawEmail()));
+                logger.debug("Wrong email format. Email is ignored -", next.getRawEmail());
             }
         }
         logger.info("Out of while loop !");
     }
+
+    public String getTemplatedMessage(Map<String, String> model, String bodyMessage) {
+        String message = "";
+        try {
+            Configuration configuration = new Configuration(Configuration.VERSION_2_3_27);
+
+            StringTemplateLoader stringTemplateLoader = new StringTemplateLoader();
+            stringTemplateLoader.putTemplate("myTemplate", bodyMessage);
+            configuration.setTemplateLoader(stringTemplateLoader);
+            configuration.setDefaultEncoding("UTF-8");
+            configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+
+
+            Template template = configuration.getTemplate("myTemplate");
+            StringWriter stringWriter = new StringWriter();
+            template.process(model, stringWriter);
+            message = stringWriter.toString();
+        } catch (IOException | TemplateException e) {
+            logger.error("{}", e);
+        }
+        logger.info(message);
+        return message;
+    }
+
 }
-
-
-//    public String getTemplatedMessage(Map<String, String> model, String bodyMessage) {
-//        String message = "";
-//        try {
-//            Configuration configuration = new Configuration(Configuration.VERSION_2_3_27);
-//
-//            StringTemplateLoader stringTemplateLoader = new StringTemplateLoader();
-//            stringTemplateLoader.putTemplate("myTemplate", bodyMessage);
-//            configuration.setTemplateLoader(stringTemplateLoader);
-//            configuration.setDefaultEncoding("UTF-8");
-//            configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-//
-//
-//            Template template = configuration.getTemplate("myTemplate");
-//            StringWriter stringWriter = new StringWriter();
-//            template.process(model, stringWriter);
-//            message = stringWriter.toString();
-//        } catch (IOException | TemplateException e) {
-//            e.printStackTrace();
-//        }
-//        logger.info(message);
-//        return message;
-//    }
-//
-//}
