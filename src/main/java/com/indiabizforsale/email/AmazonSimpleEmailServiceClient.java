@@ -7,8 +7,8 @@ import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
 
 public class AmazonSimpleEmailServiceClient {
     private static final String WITHREGION = "us-west-2";
-    private final String awsAccessKey = System.getProperty("AwsAccessKey");
-    private final String awsSecretKey = System.getProperty("AwsSecretKey");
+    private final String awsAccessKey = System.getProperty(ConfigurationService.AWS_ACCESS_KEY);
+    private final String awsSecretKey = System.getProperty(ConfigurationService.AWS_SECRET_KEY);
 
     public AmazonSimpleEmailService getAmazonSimpleEmailService() {
         BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(awsAccessKey, awsSecretKey);
