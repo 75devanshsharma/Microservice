@@ -235,7 +235,7 @@ public class EmailSender {
             StringTemplateLoader stringTemplateLoader = new StringTemplateLoader();
             stringTemplateLoader.putTemplate("myTemplate", bodyMessage);
             configuration.setTemplateLoader(stringTemplateLoader);
-            configuration.setDefaultEncoding("UTF-8");
+            configuration.setDefaultEncoding(WITHCHARSET);
             configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 
 
