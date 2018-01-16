@@ -183,48 +183,34 @@ public class EmailSender {
      */
     private void sendBulkFormattedEmail(PayLoad payLoad) {
         logger.info("Entered sendBulkFormattedEmail");
-        ArrayList<Recipient> recipients = payLoad.getTo();
-        SendEmailRequest sendEmailRequest = new SendEmailRequest();
-        sendEmailRequest.withSource(payLoad.getFrom());
-        sendEmailRequest.setMessage(new Message().withSubject(new Content().withData(payLoad.getSubject())
-                .withCharset(WITHCHARSET)).withBody(new Body().withText(new Content().withData(payLoad.getBodyText())
-                .withCharset(WITHCHARSET)).withHtml(new Content().withData(payLoad.getBodyText()).withCharset(WITHCHARSET))));
-        Collection<String> addresses = new ArrayList<>();
-        Destination destination = new Destination();
         EmailValidationService emailValidationService = new EmailValidationService();
-        Iterator itr = recipients.iterator();
-        int count = 0;
-        while (itr.hasNext()) {
-            Recipient next = (Recipient) itr.next();
-            if (emailValidationService.isValid(next.getRawEmail())) {
-                logger.info("Entered if..");
-                addresses.add(next.getRawEmail());
-                count++;
+        int count = payLoad.getToAddressCount();
+        for (int i = 0; i < count; i++) {
+            Map<String, String> templateData = payLoad.getTo().get(i).getTemplateData();
+            if (emailValidationService.isValid(payLoad.getTo().get(i).getRawEmail())) {
+                SendEmailRequest sendEmailRequest = new SendEmailRequest();
+                sendEmailRequest.withSource(payLoad.getFrom());
+                sendEmailRequest.setMessage(new Message().withSubject(new Content().withData(payLoad.getSubject())
+                        .withCharset(WITHCHARSET)).withBody(new Body().withText(new Content()
+                        .withData(getTemplatedMessage(templateData, payLoad.getBodyText())).withCharset(WITHCHARSET))
+                        .withHtml(new Content()
+                                .withData(getTemplatedMessage(templateData, payLoad.getBodyHtml())).withCharset(WITHCHARSET))));
+                sendEmailRequest.setDestination(new Destination().withToAddresses(payLoad.getTo().get(i).getEmail()));
+                logger.info("{}", sendEmailRequest);
 
-                if (count >= 20 || !itr.hasNext()) {
-                    logger.info("Count is {}", count);
-                    logger.info("Entered else..");
-                    logger.info("{}", addresses);
-                    destination.withToAddresses(addresses);
-                    sendEmailRequest.withDestination(destination);
-                    logger.info("{}", sendEmailRequest);
-
-                    try {
-                        logger.info("Attempting to send bulk emails through Amazon SES by using the AWS SDK for Java....");
-                        SendEmailResult sendEmailResult = client.getAmazonSimpleEmailService().sendEmail(sendEmailRequest);
-                        logger.info("{}", sendEmailResult.getMessageId());
-                        logger.info("Email sent.....");
-                    } catch (Exception ex) {
-                        logger.error("The email was not sent..!", ex);
-                    }
-                    count = 0;
-                    addresses.clear();
+                try {
+                    logger.info("Attempting to send bulk emails through Amazon SES by using the AWS SDK for Java....");
+                    SendEmailResult sendEmailResult = client.getAmazonSimpleEmailService().sendEmail(sendEmailRequest);
+                    logger.info("{}", sendEmailResult.getMessageId());
+                    logger.info("Email sent.....");
+                } catch (Exception ex) {
+                    logger.error("The email was not sent..!", ex);
                 }
             } else {
-                logger.debug("Wrong email format. Email is ignored -", next.getRawEmail());
+                logger.debug("Wrong email format. Email is ignored -", payLoad.getTo().get(i).getRawEmail());
             }
         }
-        logger.info("Out of while loop !");
+        logger.info("Out of for loop !");
     }
 
     public String getTemplatedMessage(Map<String, String> model, String bodyMessage) {

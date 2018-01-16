@@ -123,7 +123,7 @@ public class EmailSenderTest {
         payLoad.setBodyHtml("<p> Hi ${name} . How are you ? </p>");
         try {
             emailSender.sendEmail(payLoad);
-            verify(amazonSimpleEmailService, times(2)).sendEmail(Mockito.any(SendEmailRequest.class));
+            verify(amazonSimpleEmailService, times(25)).sendEmail(Mockito.any(SendEmailRequest.class));
         } catch (IOException e) {
             e.printStackTrace();
         }
