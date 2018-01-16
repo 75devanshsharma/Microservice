@@ -176,9 +176,7 @@ public class EmailSender {
 
     /**
      * <p> This method is used for sending formatted email to many number of recipients.
-     * The destinations are stored in collection and are then passed to destination object.
-     * Batching of 20 emails per request is done.</p>
-     *
+     * Every recipient receives message with their own template data.</p>
      * @param payLoad
      */
     private void sendBulkFormattedEmail(PayLoad payLoad) {
