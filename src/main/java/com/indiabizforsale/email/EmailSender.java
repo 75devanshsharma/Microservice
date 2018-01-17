@@ -24,44 +24,44 @@ import java.util.concurrent.RecursiveAction;
 public class EmailSender extends RecursiveAction {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(EmailSender.class);
     private static final String WITHCHARSET = "UTF-8";
-    private final static int TASK_LEN = 10;
+    private static final int TASK_LEN = 10;
     private AmazonSimpleEmailServiceClient client;
     private PayLoad payLoad;
     private int from;
-    private int count;
+    private int totalCount;
 
     public EmailSender(AmazonSimpleEmailServiceClient client) {
         this.client = client;
         logger.info("{}", this.client);
     }
 
-    public EmailSender(PayLoad payLoad,int from, int count, AmazonSimpleEmailServiceClient client1)
+    public EmailSender(PayLoad payLoad,int from, int count, AmazonSimpleEmailServiceClient client)
     {
         this.payLoad = payLoad;
         this.from =from;
-        this.count = count;
-        this.client = client1;
+        this.totalCount = count;
+        this.client = client;
     }
 
     @Override
     protected void compute() {
-        int len = count -from;
+        int len = totalCount -from;
         if(len<TASK_LEN){
-            sendBulkFormattedEmail(client,payLoad,from,count);
+            sendBulkFormattedEmail(client,payLoad,from,totalCount);
         }
         else
         {
-            int mid = (from+count)>>>1;
+            int mid = (from+totalCount)>>>1;
             new EmailSender(payLoad,from,mid,client).fork();
-            new EmailSender(payLoad,mid,count,client).fork();
+            new EmailSender(payLoad,mid,totalCount,client).fork();
         }
     }
 
-    public void ParallelProcessing(PayLoad payLoad)
+    public void parallelProcessing(PayLoad payLoad)
     {
-        int count = payLoad.getToAddressCount();
+        int AddressCount = payLoad.getToAddressCount();
         ForkJoinPool forkJoinPool = new ForkJoinPool(4);
-        forkJoinPool.invoke(new EmailSender(payLoad,0,count,client));
+        forkJoinPool.invoke(new EmailSender(payLoad,0,AddressCount,client));
     }
 
     /**
@@ -83,7 +83,7 @@ public class EmailSender extends RecursiveAction {
         } else if (payLoad.getToAddressCount() < 2)
             sendSingleFormattedEmail(payLoad);
         else
-            ParallelProcessing(payLoad);
+            parallelProcessing(payLoad);
     }
 
 
@@ -215,7 +215,7 @@ public class EmailSender extends RecursiveAction {
      *
      * @param payLoad
      */
-    private void sendBulkFormattedEmail(AmazonSimpleEmailServiceClient client1, PayLoad payLoad, int from, int count) {
+    private void sendBulkFormattedEmail(AmazonSimpleEmailServiceClient client, PayLoad payLoad, int from, int count) {
         logger.info("Entered sendBulkFormattedEmail");
         EmailValidationService emailValidationService = new EmailValidationService();
         for (int i = from; i < count; i++) {
@@ -232,7 +232,7 @@ public class EmailSender extends RecursiveAction {
                 logger.info("{}", sendEmailRequest);
                 try {
                     logger.info("Attempting to send bulk emails through Amazon SES by using the AWS SDK for Java....");
-                    SendEmailResult sendEmailResult = client1.getAmazonSimpleEmailService().sendEmail(sendEmailRequest);
+                    SendEmailResult sendEmailResult = client.getAmazonSimpleEmailService().sendEmail(sendEmailRequest);
                     logger.info("{}", sendEmailResult.getMessageId());
                     logger.info("Email sent.....");
                 } catch (Exception ex) {
