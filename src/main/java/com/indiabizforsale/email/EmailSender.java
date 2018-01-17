@@ -35,33 +35,42 @@ public class EmailSender extends RecursiveAction {
         logger.info("{}", this.client);
     }
 
-    public EmailSender(PayLoad payLoad,int from, int count, AmazonSimpleEmailServiceClient client)
-    {
+
+    public EmailSender(PayLoad payLoad, int from, int count, AmazonSimpleEmailServiceClient client) {
         this.payLoad = payLoad;
-        this.from =from;
+        this.from = from;
         this.totalCount = count;
         this.client = client;
     }
 
+    /**
+     * <p> Used to call the EmailSender class in parallel.
+     * Calls the sendBulkFormattedEmail method in parallel for sending templated emails
+     * to many recipient. Thus, reduces time.</p>
+     */
     @Override
     protected void compute() {
-        int len = totalCount -from;
-        if(len<TASK_LEN){
-            sendBulkFormattedEmail(client,payLoad,from,totalCount);
-        }
-        else
-        {
-            int mid = (from+totalCount)>>>1;
-            new EmailSender(payLoad,from,mid,client).fork();
-            new EmailSender(payLoad,mid,totalCount,client).fork();
+        int len = totalCount - from;
+        if (len < TASK_LEN) {
+            sendBulkFormattedEmail(client, payLoad, from, totalCount);
+        } else {
+            int mid = (from + totalCount) >>> 1;
+            new EmailSender(payLoad, from, mid, client).fork();
+            new EmailSender(payLoad, mid, totalCount, client).fork();
         }
     }
 
-    public void parallelProcessing(PayLoad payLoad)
-    {
-        int AddressCount = payLoad.getToAddressCount();
-        ForkJoinPool forkJoinPool = new ForkJoinPool(4);
-        forkJoinPool.invoke(new EmailSender(payLoad,0,AddressCount,client));
+    /**
+     * <h4> Used to send the payload object in parallel to the EmailSender class. </h4>
+     *
+     * @param payLoad
+     */
+    public void parallelProcessing(PayLoad payLoad) {
+        int addressCount = payLoad.getToAddressCount();
+        int processor = Runtime.getRuntime().availableProcessors();
+        logger.info("{}", processor);
+        ForkJoinPool forkJoinPool = new ForkJoinPool(processor);
+        forkJoinPool.invoke(new EmailSender(payLoad, 0, addressCount, client));
     }
 
     /**

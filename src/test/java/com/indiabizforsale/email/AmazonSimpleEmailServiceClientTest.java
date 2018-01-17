@@ -3,7 +3,7 @@ package com.indiabizforsale.email;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 public class AmazonSimpleEmailServiceClientTest {
 

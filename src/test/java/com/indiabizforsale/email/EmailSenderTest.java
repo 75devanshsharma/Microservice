@@ -130,11 +130,10 @@ public class EmailSenderTest {
     }
 
     @Test
-    public void getTemplatedMessageTest()
-    {
+    public void getTemplatedMessageTest() {
         PayLoad payLoad = new PayLoad();
         payLoad.setBodyText("Hi ${name}.");
-        Assert.assertEquals("Hi Dev." , emailSender.getTemplatedMessage(getTemplateData(),payLoad.getBodyText()));
+        Assert.assertEquals("Hi Dev.", emailSender.getTemplatedMessage(getTemplateData(), payLoad.getBodyText()));
     }
 
 

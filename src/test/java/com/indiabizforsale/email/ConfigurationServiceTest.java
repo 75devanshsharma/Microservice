@@ -2,7 +2,7 @@ package com.indiabizforsale.email;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 public class ConfigurationServiceTest {
 
