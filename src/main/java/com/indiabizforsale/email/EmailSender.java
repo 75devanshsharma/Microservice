@@ -17,16 +17,50 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.RecursiveAction;
 
 
-public class EmailSender {
+public class EmailSender extends RecursiveAction {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(EmailSender.class);
     private static final String WITHCHARSET = "UTF-8";
+    private final static int TASK_LEN = 10;
     private AmazonSimpleEmailServiceClient client;
+    private PayLoad payLoad;
+    private int from;
+    private int count;
 
     public EmailSender(AmazonSimpleEmailServiceClient client) {
         this.client = client;
         logger.info("{}", this.client);
+    }
+
+    public EmailSender(PayLoad payLoad,int from, int count)
+    {
+        this.payLoad = payLoad;
+        this.from =from;
+        this.count = count;
+    }
+
+    @Override
+    protected void compute() {
+        int len = count -from;
+        if(len<TASK_LEN){
+            sendBulkFormattedEmail(payLoad,from,count);
+        }
+        else
+        {
+            int mid = (from+count)>>>1;
+            new EmailSender(payLoad,from,mid).fork();
+            new EmailSender(payLoad,mid,count).fork();
+        }
+    }
+
+    public void ParallelProcessing(PayLoad payLoad)
+    {
+        int count = payLoad.getToAddressCount();
+        ForkJoinPool forkJoinPool = new ForkJoinPool(4);
+        forkJoinPool.invoke(new EmailSender(payLoad,0,count));
     }
 
     /**
@@ -48,7 +82,7 @@ public class EmailSender {
         } else if (payLoad.getToAddressCount() < 2)
             sendSingleFormattedEmail(payLoad);
         else
-            sendBulkFormattedEmail(payLoad);
+            ParallelProcessing(payLoad);
     }
 
 
@@ -177,13 +211,13 @@ public class EmailSender {
     /**
      * <p> This method is used for sending formatted email to many number of recipients.
      * Every recipient receives message with their own template data.</p>
+     *
      * @param payLoad
      */
-    private void sendBulkFormattedEmail(PayLoad payLoad) {
+    private void sendBulkFormattedEmail(PayLoad payLoad, int from, int count) {
         logger.info("Entered sendBulkFormattedEmail");
         EmailValidationService emailValidationService = new EmailValidationService();
-        int count = payLoad.getToAddressCount();
-        for (int i = 0; i < count; i++) {
+        for (int i = from; i < count; i++) {
             Map<String, String> templateData = payLoad.getTo().get(i).getTemplateData();
             if (emailValidationService.isValid(payLoad.getTo().get(i).getRawEmail())) {
                 SendEmailRequest sendEmailRequest = new SendEmailRequest();
@@ -195,7 +229,6 @@ public class EmailSender {
                                 .withData(getTemplatedMessage(templateData, payLoad.getBodyHtml())).withCharset(WITHCHARSET))));
                 sendEmailRequest.setDestination(new Destination().withToAddresses(payLoad.getTo().get(i).getEmail()));
                 logger.info("{}", sendEmailRequest);
-
                 try {
                     logger.info("Attempting to send bulk emails through Amazon SES by using the AWS SDK for Java....");
                     SendEmailResult sendEmailResult = client.getAmazonSimpleEmailService().sendEmail(sendEmailRequest);
@@ -210,6 +243,7 @@ public class EmailSender {
         }
         logger.info("Out of for loop !");
     }
+
 
     public String getTemplatedMessage(Map<String, String> model, String bodyMessage) {
         String message = "";
