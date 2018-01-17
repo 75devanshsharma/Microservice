@@ -35,24 +35,25 @@ public class EmailSender extends RecursiveAction {
         logger.info("{}", this.client);
     }
 
-    public EmailSender(PayLoad payLoad,int from, int count)
+    public EmailSender(PayLoad payLoad,int from, int count, AmazonSimpleEmailServiceClient client1)
     {
         this.payLoad = payLoad;
         this.from =from;
         this.count = count;
+        this.client = client1;
     }
 
     @Override
     protected void compute() {
         int len = count -from;
         if(len<TASK_LEN){
-            sendBulkFormattedEmail(payLoad,from,count);
+            sendBulkFormattedEmail(client,payLoad,from,count);
         }
         else
         {
             int mid = (from+count)>>>1;
-            new EmailSender(payLoad,from,mid).fork();
-            new EmailSender(payLoad,mid,count).fork();
+            new EmailSender(payLoad,from,mid,client).fork();
+            new EmailSender(payLoad,mid,count,client).fork();
         }
     }
 
@@ -60,7 +61,7 @@ public class EmailSender extends RecursiveAction {
     {
         int count = payLoad.getToAddressCount();
         ForkJoinPool forkJoinPool = new ForkJoinPool(4);
-        forkJoinPool.invoke(new EmailSender(payLoad,0,count));
+        forkJoinPool.invoke(new EmailSender(payLoad,0,count,client));
     }
 
     /**
@@ -214,7 +215,7 @@ public class EmailSender extends RecursiveAction {
      *
      * @param payLoad
      */
-    private void sendBulkFormattedEmail(PayLoad payLoad, int from, int count) {
+    private void sendBulkFormattedEmail(AmazonSimpleEmailServiceClient client1, PayLoad payLoad, int from, int count) {
         logger.info("Entered sendBulkFormattedEmail");
         EmailValidationService emailValidationService = new EmailValidationService();
         for (int i = from; i < count; i++) {
@@ -231,7 +232,7 @@ public class EmailSender extends RecursiveAction {
                 logger.info("{}", sendEmailRequest);
                 try {
                     logger.info("Attempting to send bulk emails through Amazon SES by using the AWS SDK for Java....");
-                    SendEmailResult sendEmailResult = client.getAmazonSimpleEmailService().sendEmail(sendEmailRequest);
+                    SendEmailResult sendEmailResult = client1.getAmazonSimpleEmailService().sendEmail(sendEmailRequest);
                     logger.info("{}", sendEmailResult.getMessageId());
                     logger.info("Email sent.....");
                 } catch (Exception ex) {
