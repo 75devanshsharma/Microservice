@@ -29,7 +29,7 @@ public class AmazonEmailTemplate {
             logger.info("Attempting to create template through Amazon SES .....");
             CreateTemplateResult createTemplateResult = client.getAmazonSimpleEmailService().createTemplate(createTemplateRequest);
             logger.info("Template created successfully.");
-            logger.info("{}", createTemplateResult.toString());
+            logger.info("{}", createTemplateResult);
         } catch (Exception e) {
             logger.error("Could not create template..Error :", e);
         }
@@ -60,7 +60,7 @@ public class AmazonEmailTemplate {
         try {
             logger.info("Attempting to view the list using Amazon SES...");
             ListTemplatesResult listTemplatesResult = client.getAmazonSimpleEmailService().listTemplates(listTemplatesRequest);
-            logger.info("{}", listTemplatesResult.toString());
+            logger.info("{}", listTemplatesResult);
             while (listTemplatesResult.getNextToken() != null) {
                 listTemplatesRequest.setNextToken(listTemplatesResult.getNextToken());
                 listTemplatesResult = client.getAmazonSimpleEmailService().listTemplates(listTemplatesRequest);
@@ -82,7 +82,7 @@ public class AmazonEmailTemplate {
         try {
             logger.info("Attempting to update the template using Amazon SES");
             UpdateTemplateResult updateTemplateResult = client.getAmazonSimpleEmailService().updateTemplate(updateTemplateRequest);
-            logger.info("{}", updateTemplateResult.toString());
+            logger.info("{}", updateTemplateResult);
             logger.info("Template Updated");
         } catch (Exception eu) {
             logger.error("Cannot update template..Error :", eu);
