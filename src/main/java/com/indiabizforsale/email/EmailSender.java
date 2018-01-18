@@ -95,7 +95,6 @@ public class EmailSender extends RecursiveAction {
             parallelProcessing(payLoad);
     }
 
-
     /**
      * <p> This method is used to send email to a single recipient by setting the to,from,templateId
      * & template data. The email is sent using the Amazon SES service.</p>

@@ -15,7 +15,51 @@ public class PayLoad {
     private String bodyHtml;
     private String bodyText;
     private String subject;
+    private String templateName;
+    private String templateSubject;
+    private String templateHtml;
+    private String templateText;
+    private int maxTemplate;
 
+    public int getMaxTemplate() {
+        return maxTemplate;
+    }
+
+    public void setMaxTemplate(int maxTemplate) {
+        this.maxTemplate = maxTemplate;
+    }
+
+    public String getTemplateName() {
+        return templateName;
+    }
+
+    public void setTemplateName(String templateName) {
+        this.templateName = templateName;
+    }
+
+    public String getTemplateSubject() {
+        return templateSubject;
+    }
+
+    public void setTemplateSubject(String templateSubject) {
+        this.templateSubject = templateSubject;
+    }
+
+    public String getTemplateHtml() {
+        return templateHtml;
+    }
+
+    public void setTemplateHtml(String templateHtml) {
+        this.templateHtml = templateHtml;
+    }
+
+    public String getTemplateText() {
+        return templateText;
+    }
+
+    public void setTemplateText(String templateText) {
+        this.templateText = templateText;
+    }
 
     public String getBodyHtml() {
         return bodyHtml;
