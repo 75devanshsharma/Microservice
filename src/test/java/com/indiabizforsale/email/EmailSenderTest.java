@@ -3,6 +3,7 @@ package com.indiabizforsale.email;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.model.SendBulkTemplatedEmailRequest;
 import com.amazonaws.services.simpleemail.model.SendEmailRequest;
+import com.amazonaws.services.simpleemail.model.SendEmailResult;
 import com.amazonaws.services.simpleemail.model.SendTemplatedEmailRequest;
 import com.indiabizforsale.email.model.PayLoad;
 import com.indiabizforsale.email.model.Recipient;
@@ -11,7 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -42,7 +43,7 @@ public class EmailSenderTest {
     public void sendSingleEmail() throws IOException {
         PayLoad payLoad = getSingleEmailPayLoad();
         emailSender.sendEmail(payLoad);
-        verify(amazonSimpleEmailService, times(1)).sendTemplatedEmail(Mockito.any(SendTemplatedEmailRequest.class));
+        verify(amazonSimpleEmailService, times(1)).sendTemplatedEmail(any(SendTemplatedEmailRequest.class));
     }
 
 
@@ -90,7 +91,7 @@ public class EmailSenderTest {
         payLoad.setTemplateId("MyTemplate1");
         logger.info("{}", payLoad.toString());
         emailSender.sendEmail(payLoad);
-        verify(amazonSimpleEmailService, times(2)).sendBulkTemplatedEmail(Mockito.any(SendBulkTemplatedEmailRequest.class));
+        verify(amazonSimpleEmailService, times(2)).sendBulkTemplatedEmail(any(SendBulkTemplatedEmailRequest.class));
 
     }
 
@@ -109,11 +110,11 @@ public class EmailSenderTest {
         payLoad.setBodyText("Hi ${name} . How are you ?");
         payLoad.setBodyHtml("<p> Hi ${name} . How are you ? </p>");
         emailSender.sendEmail(payLoad);
-        verify(amazonSimpleEmailService, times(1)).sendEmail(Mockito.any(SendEmailRequest.class));
+        verify(amazonSimpleEmailService, times(1)).sendEmail(any(SendEmailRequest.class));
     }
 
     @Test
-    public void sendBulkFormattedEmail() {
+    public void sendBulkFormattedEmail() throws IOException {
         PayLoad payLoad = new PayLoad();
         payLoad.setTo(getBulkEmailData());
         payLoad.setFrom("devansh@indiabizforsale.com");
@@ -121,12 +122,8 @@ public class EmailSenderTest {
         payLoad.setSubject("Hello");
         payLoad.setBodyText("Hi ${name} . How are you ?");
         payLoad.setBodyHtml("<p> Hi ${name} . How are you ? </p>");
-        try {
-            emailSender.sendEmail(payLoad);
-            verify(amazonSimpleEmailService, times(0)).sendEmail(Mockito.any(SendEmailRequest.class));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        emailSender.sendEmail(payLoad);
+        verify(amazonSimpleEmailService, times(25)).sendEmail(any(SendEmailRequest.class));
     }
 
     @Test

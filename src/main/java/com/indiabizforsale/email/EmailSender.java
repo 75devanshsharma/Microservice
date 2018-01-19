@@ -55,8 +55,12 @@ public class EmailSender extends RecursiveAction {
             sendBulkFormattedEmail(client, payLoad, from, totalCount);
         } else {
             int mid = (from + totalCount) >>> 1;
-            new EmailSender(payLoad, from, mid, client).fork();
-            new EmailSender(payLoad, mid, totalCount, client).fork();
+            EmailSender left = new EmailSender(payLoad, from, mid, client);
+            left.fork();
+            EmailSender right = new EmailSender(payLoad, mid, totalCount, client);
+            right.fork();
+            left.join();
+            right.join();
         }
     }
 
@@ -241,7 +245,7 @@ public class EmailSender extends RecursiveAction {
                 try {
                     logger.info("Attempting to send bulk emails through Amazon SES by using the AWS SDK for Java....");
                     SendEmailResult sendEmailResult = client.getAmazonSimpleEmailService().sendEmail(sendEmailRequest);
-                    logger.info("{}", sendEmailResult.getMessageId());
+//                    logger.info("{}", sendEmailResult.getMessageId());
                     logger.info("Email sent.....");
                 } catch (Exception ex) {
                     logger.error("The email was not sent..!", ex);
