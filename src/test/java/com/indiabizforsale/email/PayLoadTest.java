@@ -15,7 +15,7 @@ public class PayLoadTest {
     public void payloadTest() throws IOException {
         final org.slf4j.Logger logger = LoggerFactory.getLogger(PayLoadTest.class);
         ObjectMapper mapper = new ObjectMapper();
-        String json = "{\"to\":[{\"email\":\"devansh@indiabizforsale.com\",\"templateData\":{\"name\":\"Dev\"}}],\"from\":\"raj@indiabizforsale.com\",\"fromName\":\"Raj\",\"templateId\":\"MyTemplate1\"}";
+        String json = "{\"to\":[{\"email\":\"devansh@indiabizforsale.com\",\"templateData\":{\"name\":\"Dev\"}}],\"from\":\"raj@indiabizforsale.com\",\"fromName\":\"Raj\",\"templateName\":\"MyTemplate1\"}";
         logger.info(json);
         PayLoad payLoad = mapper.readValue(json, PayLoad.class);
         assertEquals("Passed", "Raj", payLoad.getFromName());
