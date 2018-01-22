@@ -34,9 +34,9 @@ public class AmazonEmailTemplateTest {
     public void createTemplateTest() {
         PayLoad payLoad = new PayLoad();
         payLoad.setTemplateName("Demo");
-        payLoad.setTemplateSubject("This is a Demo");
-        payLoad.setTemplateText("Hiii {{name}}. This is Demo TEXT.");
-        payLoad.setTemplateHtml("<p>Hiii {{name}}. This is Demo HTML. <p>");
+        payLoad.setSubject("This is a Demo");
+        payLoad.setBodyText("Hiii {{name}}. This is Demo TEXT.");
+        payLoad.setBodyHtml("<p>Hiii {{name}}. This is Demo HTML. <p>");
         amazonEmailTemplate.createEmailTemplate(payLoad);
         verify(amazonSimpleEmailService, times(1)).createTemplate(any(CreateTemplateRequest.class));
     }
@@ -61,9 +61,9 @@ public class AmazonEmailTemplateTest {
     public void updateTemplateTest() {
         PayLoad payLoad = new PayLoad();
         payLoad.setTemplateName("Demo19");
-        payLoad.setTemplateSubject("Hello World.");
-        payLoad.setTemplateText(" Hello {{name}}.");
-        payLoad.setTemplateHtml("<p> Hello {{name}}. <p>");
+        payLoad.setSubject("Hello World.");
+        payLoad.setBodyText(" Hello {{name}}.");
+        payLoad.setBodyHtml("<p> Hello {{name}}. <p>");
         amazonEmailTemplate.updateEmailTemplate(payLoad);
         verify(amazonSimpleEmailService, times(1)).updateTemplate(any(UpdateTemplateRequest.class));
     }

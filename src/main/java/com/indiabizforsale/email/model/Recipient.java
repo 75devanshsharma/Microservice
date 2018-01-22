@@ -64,10 +64,6 @@ public class Recipient {
         return templateData.get(key);
     }
 
-    public boolean checkKey() {
-        return templateData.containsKey("name");
-    }
-
     @Override
     public String toString() {
         return "Recipient{" +

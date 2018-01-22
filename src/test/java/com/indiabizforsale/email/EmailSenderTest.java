@@ -56,7 +56,7 @@ public class EmailSenderTest {
         payLoad.setTo(to);
         payLoad.setFrom("devansh@indiabizforsale.com");
         payLoad.setFromName("Devansh");
-        payLoad.setTemplateId("MyTemplate1");
+        payLoad.setTemplateName("MyTemplate1");
         return payLoad;
     }
 
@@ -87,7 +87,7 @@ public class EmailSenderTest {
         payLoad.setTo(getBulkEmailData());
         payLoad.setFrom("devansh@indiabizforsale.com");
         payLoad.setFromName("Dev");
-        payLoad.setTemplateId("MyTemplate1");
+        payLoad.setTemplateName("MyTemplate1");
         logger.info("{}", payLoad.toString());
         emailSender.sendEmail(payLoad);
         verify(amazonSimpleEmailService, times(2)).sendBulkTemplatedEmail(any(SendBulkTemplatedEmailRequest.class));

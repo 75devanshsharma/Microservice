@@ -19,9 +19,9 @@ public class AmazonEmailTemplate {
         CreateTemplateRequest createTemplateRequest = new CreateTemplateRequest();
         Template template = new Template();
         template.withTemplateName(payLoad.getTemplateName());
-        template.withSubjectPart(payLoad.getTemplateSubject());
-        template.withHtmlPart(payLoad.getTemplateHtml());
-        template.withTextPart(payLoad.getTemplateText());
+        template.withSubjectPart(payLoad.getSubject());
+        template.withHtmlPart(payLoad.getBodyHtml());
+        template.withTextPart(payLoad.getBodyText());
         createTemplateRequest.setTemplate(template);
         logger.info("{}", createTemplateRequest);
 
@@ -75,9 +75,9 @@ public class AmazonEmailTemplate {
         UpdateTemplateRequest updateTemplateRequest = new UpdateTemplateRequest();
         Template template = new Template();
         template.setTemplateName(payload.getTemplateName());
-        template.setSubjectPart(payload.getTemplateSubject());
-        template.setTextPart(payload.getTemplateText());
-        template.setHtmlPart(payload.getTemplateHtml());
+        template.setSubjectPart(payload.getSubject());
+        template.setTextPart(payload.getBodyText());
+        template.setHtmlPart(payload.getBodyHtml());
         updateTemplateRequest.setTemplate(template);
         try {
             logger.info("Attempting to update the template using Amazon SES");

@@ -21,6 +21,6 @@ public class PayLoadTest {
         assertEquals("Passed", "Raj", payLoad.getFromName());
         assertEquals("devansh@indiabizforsale.com", payLoad.getTo().get(0).getRawEmail());
         assertEquals("raj@indiabizforsale.com", payLoad.getRawFrom());
-        assertEquals("MyTemplate1", payLoad.getTemplateId());
+        assertEquals("MyTemplate1", payLoad.getTemplateName());
     }
 }

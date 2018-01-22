@@ -10,15 +10,11 @@ public class PayLoad {
 
     private ArrayList<Recipient> to;
     private String from;
-    private String templateId;
     private String fromName;
     private String bodyHtml;
     private String bodyText;
     private String subject;
     private String templateName;
-    private String templateSubject;
-    private String templateHtml;
-    private String templateText;
     private int maxTemplate;
 
     public int getMaxTemplate() {
@@ -35,30 +31,6 @@ public class PayLoad {
 
     public void setTemplateName(String templateName) {
         this.templateName = templateName;
-    }
-
-    public String getTemplateSubject() {
-        return templateSubject;
-    }
-
-    public void setTemplateSubject(String templateSubject) {
-        this.templateSubject = templateSubject;
-    }
-
-    public String getTemplateHtml() {
-        return templateHtml;
-    }
-
-    public void setTemplateHtml(String templateHtml) {
-        this.templateHtml = templateHtml;
-    }
-
-    public String getTemplateText() {
-        return templateText;
-    }
-
-    public void setTemplateText(String templateText) {
-        this.templateText = templateText;
     }
 
     public String getBodyHtml() {
@@ -130,14 +102,6 @@ public class PayLoad {
         this.from = from;
     }
 
-    public String getTemplateId() {
-        return templateId;
-    }
-
-    public void setTemplateId(String templateId) {
-        this.templateId = templateId;
-    }
-
     public String getFromName() {
         return fromName;
     }
@@ -155,7 +119,7 @@ public class PayLoad {
         return "PayLoad{" +
                 "to=" + to +
                 ", from='" + from + '\'' +
-                ", templateId='" + templateId + '\'' +
+                ", templateName='" + templateName + '\'' +
                 ", fromName='" + fromName + '\'' +
                 ", bodyHtml='" + bodyHtml + '\'' +
                 ", bodyText='" + bodyText + '\'' +

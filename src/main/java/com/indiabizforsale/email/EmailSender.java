@@ -88,16 +88,22 @@ public class EmailSender extends RecursiveAction {
      */
     public void sendEmail(PayLoad payLoad) throws IOException {
 
-        if (payLoad.getTemplateId() != null) {
+        if (payLoad.getTemplateName() != null) {
             if (payLoad.getToAddressCount() < 2)
                 sendSingleEmail(payLoad);
-            else
+            else {
+                if(payLoad.getBodyText()!=null||payLoad.getBodyHtml()!=null)
+                {
+                    new AmazonEmailTemplate(this.client).createEmailTemplate(payLoad);
+                }
                 sendBulkEmail(payLoad);
+            }
         } else if (payLoad.getToAddressCount() < 2)
             sendSingleFormattedEmail(payLoad);
         else
             parallelProcessing(payLoad);
     }
+
 
     /**
      * <p> This method is used to send email to a single recipient by setting the to,from,templateId
@@ -114,7 +120,7 @@ public class EmailSender extends RecursiveAction {
             SendTemplatedEmailRequest sendTemplatedEmailRequest = new SendTemplatedEmailRequest();
             sendTemplatedEmailRequest.setDestination(new Destination().withToAddresses(payLoad.getFirstEmail()));
             sendTemplatedEmailRequest.setSource(payLoad.getFrom());
-            sendTemplatedEmailRequest.setTemplate(payLoad.getTemplateId());
+            sendTemplatedEmailRequest.setTemplate(payLoad.getTemplateName());
             sendTemplatedEmailRequest.setTemplateData(payLoad.getFirstTemplate());
 
             try {
@@ -145,7 +151,7 @@ public class EmailSender extends RecursiveAction {
         ArrayList<Recipient> recipients = payLoad.getTo();
         SendBulkTemplatedEmailRequest sendBulkTemplatedEmailRequest = new SendBulkTemplatedEmailRequest();
         sendBulkTemplatedEmailRequest.setSource(payLoad.getFrom());
-        sendBulkTemplatedEmailRequest.setTemplate(payLoad.getTemplateId());
+        sendBulkTemplatedEmailRequest.setTemplate(payLoad.getTemplateName());
         Collection<BulkEmailDestination> bulkEmailDestinations = new ArrayList<>();
         EmailValidationService emailValidationService = new EmailValidationService();
         Iterator itr = recipients.iterator();
