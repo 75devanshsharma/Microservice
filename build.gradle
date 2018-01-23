@@ -1,6 +1,17 @@
 plugins {
     id "org.sonarqube" version "2.6"
 }
+
+plugins {
+    id 'com.github.johnrengelman.shadow' version '2.0.2'
+    id 'java'
+}
+
+shadowJar {
+    baseName = 'Email-Service'
+    classifier = null
+    version = null
+}
 group 'com.indiabizforsale'
 version '1.0-SNAPSHOT'
 
