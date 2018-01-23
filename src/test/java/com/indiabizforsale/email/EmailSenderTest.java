@@ -40,13 +40,6 @@ public class EmailSenderTest {
 
     @Test
     public void sendSingleEmail() throws IOException {
-        PayLoad payLoad = getSingleEmailPayLoad();
-        emailSender.sendEmail(payLoad);
-        verify(amazonSimpleEmailService, times(1)).sendTemplatedEmail(any(SendTemplatedEmailRequest.class));
-    }
-
-
-    private PayLoad getSingleEmailPayLoad() {
         PayLoad payLoad = new PayLoad();
         ArrayList<Recipient> to = new ArrayList<>();
         Recipient recipient = new Recipient();
@@ -57,7 +50,9 @@ public class EmailSenderTest {
         payLoad.setFrom("devansh@indiabizforsale.com");
         payLoad.setFromName("Devansh");
         payLoad.setTemplateName("MyTemplate1");
-        return payLoad;
+        payLoad.setConfigSet("Config1");
+        emailSender.sendEmail(payLoad);
+        verify(amazonSimpleEmailService, times(1)).sendTemplatedEmail(any(SendTemplatedEmailRequest.class));
     }
 
     private Map<String, String> getTemplateData() {
@@ -88,6 +83,7 @@ public class EmailSenderTest {
         payLoad.setFrom("devansh@indiabizforsale.com");
         payLoad.setFromName("Dev");
         payLoad.setTemplateName("MyTemplate1");
+        payLoad.setConfigSet("config1");
         logger.info("{}", payLoad.toString());
         emailSender.sendEmail(payLoad);
         verify(amazonSimpleEmailService, times(2)).sendBulkTemplatedEmail(any(SendBulkTemplatedEmailRequest.class));
@@ -108,6 +104,7 @@ public class EmailSenderTest {
         payLoad.setSubject("Hello");
         payLoad.setBodyText("Hi ${name} . How are you ?");
         payLoad.setBodyHtml("<p> Hi ${name} . How are you ? </p>");
+        payLoad.setConfigSet("Config1");
         emailSender.sendEmail(payLoad);
         verify(amazonSimpleEmailService, times(1)).sendEmail(any(SendEmailRequest.class));
     }
@@ -121,6 +118,7 @@ public class EmailSenderTest {
         payLoad.setSubject("Hello");
         payLoad.setBodyText("Hi ${name} . How are you ?");
         payLoad.setBodyHtml("<p> Hi ${name} . How are you ? </p>");
+        payLoad.setConfigSet("Config1");
         emailSender.sendEmail(payLoad);
         verify(amazonSimpleEmailService, times(25)).sendEmail(any(SendEmailRequest.class));
     }

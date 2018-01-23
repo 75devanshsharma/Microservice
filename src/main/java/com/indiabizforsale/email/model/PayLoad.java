@@ -16,6 +16,15 @@ public class PayLoad {
     private String subject;
     private String templateName;
     private int maxTemplate;
+    private String configSet;
+
+    public String getConfigSet() {
+        return configSet;
+    }
+
+    public void setConfigSet(String configSet) {
+        this.configSet = configSet;
+    }
 
     public int getMaxTemplate() {
         return maxTemplate;
@@ -119,11 +128,13 @@ public class PayLoad {
         return "PayLoad{" +
                 "to=" + to +
                 ", from='" + from + '\'' +
-                ", templateName='" + templateName + '\'' +
                 ", fromName='" + fromName + '\'' +
                 ", bodyHtml='" + bodyHtml + '\'' +
                 ", bodyText='" + bodyText + '\'' +
                 ", subject='" + subject + '\'' +
+                ", templateName='" + templateName + '\'' +
+                ", maxTemplate=" + maxTemplate +
+                ", configSet='" + configSet + '\'' +
                 '}';
     }
 }
