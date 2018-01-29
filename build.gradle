@@ -1,3 +1,15 @@
+buildscript {
+    ext {
+        springBootVersion = '1.3.0.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "se.transmode.gradle:gradle-docker:1.2" // <- Here
+    }
+}
+
 plugins {
     id "org.sonarqube" version "2.6"
 }
@@ -12,6 +24,23 @@ shadowJar {
     classifier = null
     version = null
 }
+
+apply plugin: 'docker'
+
+task buildDocker(type: Docker) {
+    baseImage = 'develar/java:latest'
+    push = project.hasProperty('push')
+    tag = 'emailserviceimage'
+    addFile {
+        from shadowJar
+        rename { 'app.jar' }
+    }
+    entryPoint(['java', '-Djava.security.egd=file:/dev/./urandom', '-jar', '/app.jar'])
+    // exposePort(8080)
+}
+
+buildDocker.dependsOn(build)
+
 group 'com.indiabizforsale'
 version '1.0-SNAPSHOT'
 
@@ -25,6 +54,7 @@ repositories {
 }
 
 dependencies {
+
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile group: 'commons-validator', name: 'commons-validator', version: '1.6'
     compile group: 'com.amazonaws', name: 'aws-java-sdk-ses', version: '1.11.248'
@@ -56,3 +86,10 @@ sonarqube {
         property "sonar.exclusions", "**/model"
     }
 }
+
+jar {
+    manifest {
+        attributes "Main-Class": "com.indiabizforsale.email.EmailServiceApplication"
+    }
+}
+

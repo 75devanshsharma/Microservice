@@ -13,17 +13,17 @@ class EmailServiceApplication {
     public static void main(String[] args) {
 
         new ConfigurationService().setEmailCredentials();
-
-        if (args.length == 1) {
-            logger.debug("Starting listener on {} ", args[0]);
-            new EmailServiceApplication().listenAndProcess(args[0]);
-        } else {
-            logger.error("Provide subscription name and mode : java -jar app.jar [subscriptionName]");
-        }
+        new EmailServiceApplication().listenAndProcess();
     }
 
-    private void listenAndProcess(String subscription) {
+    private void listenAndProcess() {
+        String subscription;
         assignRunMode();
+        if (runMode.equalsIgnoreCase("prod"))
+            subscription = "emailService";
+        else
+            subscription = "emailTest";
+        logger.info(subscription);
         logger.info("Running Application in {}", runMode);
         Subscriber subscriber = null;
         PubSubSubscriber pubSubSubscriber = new PubSubSubscriber(subscription, runMode);
