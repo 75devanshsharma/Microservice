@@ -43,9 +43,7 @@ public class AmazonEmailTemplateTest {
 
     @Test
     public void viewTemplateTest() {
-        PayLoad payLoad = new PayLoad();
-        payLoad.setMaxTemplate(10);
-        amazonEmailTemplate.viewEmailTemplates(payLoad);
+        amazonEmailTemplate.viewEmailTemplates();
         verify(amazonSimpleEmailService, times(1)).listTemplates(any(ListTemplatesRequest.class));
     }
 

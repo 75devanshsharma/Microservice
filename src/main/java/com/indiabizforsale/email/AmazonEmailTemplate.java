@@ -53,9 +53,9 @@ public class AmazonEmailTemplate {
 
     }
 
-    public void viewEmailTemplates(PayLoad payLoad) {
+    public void viewEmailTemplates() {
         ListTemplatesRequest listTemplatesRequest = new ListTemplatesRequest();
-        listTemplatesRequest.withMaxItems(payLoad.getMaxTemplate());
+        listTemplatesRequest.withMaxItems(10);
 
         try {
             logger.info("Attempting to view the list using Amazon SES...");
