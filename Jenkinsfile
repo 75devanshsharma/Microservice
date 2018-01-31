@@ -29,8 +29,8 @@ gcloud config set compute/zone us-central1-a'''
     }
     stage('deploy image') {
       steps {
-        sh 'gcloud container clusters get-credentials email-service --zone us-central1-a --project fleet-pillar-174206'
-        sh 'kubectl set image deployment/email-service email-service=gcr.io/fleet-pillar-174206/com.indiabizforsale/email-service:${BUILD_NUMBER}'
+        sh 'gcloud container clusters get-credentials email-service-cluster --zone us-central1-a --project fleet-pillar-174206'
+        sh 'kubectl set image deployment/email-service-cluster email-service-cluster=gcr.io/fleet-pillar-174206/com.indiabizforsale/email-service:${BUILD_NUMBER}'
       }
     }
   }
