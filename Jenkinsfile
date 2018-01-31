@@ -18,6 +18,7 @@ pipeline {
     stage('docker build') {
       steps {
         sh 'docker build -t gcr.io/fleet-pillar-174206/com.indiabizforsale/email-service:${BUILD_NUMBER} .'
+        sh 'gcloud docker -- push gcr.io/fleet-pillar-174206/com.indiabizforsale/email-service:${BUILD_NUMBER}'
       }
     }
     stage('upload to kubernentes') {
