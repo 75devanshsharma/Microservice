@@ -121,8 +121,8 @@ public class EmailSender extends RecursiveAction {
             sendTemplatedEmailRequest.setSource(payLoad.getFrom());
             sendTemplatedEmailRequest.setTemplate(payLoad.getTemplateName());
             sendTemplatedEmailRequest.setTemplateData(payLoad.getFirstTemplate());
-            sendTemplatedEmailRequest.setConfigurationSetName(payLoad.getConfigSet());
-            sendTemplatedEmailRequest.withTags(new MessageTag().withName("TemplateName").withValue(payLoad.getTemplateName()));
+            sendTemplatedEmailRequest.withConfigurationSetName(payLoad.getConfigSet());
+            sendTemplatedEmailRequest.withTags(new MessageTag().withName("templateName").withValue(payLoad.getTemplateName()));
 
             try {
                 logger.info("{}",sendTemplatedEmailRequest);
@@ -155,7 +155,7 @@ public class EmailSender extends RecursiveAction {
         sendBulkTemplatedEmailRequest.setSource(payLoad.getFrom());
         sendBulkTemplatedEmailRequest.setTemplate(payLoad.getTemplateName());
         sendBulkTemplatedEmailRequest.setConfigurationSetName(payLoad.getConfigSet());
-        sendBulkTemplatedEmailRequest.withDefaultTags(new MessageTag().withName("TemplateName").withValue(payLoad.getTemplateName()));
+        sendBulkTemplatedEmailRequest.withDefaultTags(new MessageTag().withName("templateName").withValue(payLoad.getTemplateName()));
         Collection<BulkEmailDestination> bulkEmailDestinations = new ArrayList<>();
         EmailValidationService emailValidationService = new EmailValidationService();
         Iterator itr = recipients.iterator();
