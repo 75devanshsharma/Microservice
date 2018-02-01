@@ -22,7 +22,7 @@ class EmailServiceApplication {
         if (runMode.equalsIgnoreCase("prod"))
             subscription = "emailService";
         else
-            subscription = "emailTest";
+            subscription = "emailServiceTest";
         logger.info(subscription);
         logger.info("Running Application in {}", runMode);
         Subscriber subscriber = null;
