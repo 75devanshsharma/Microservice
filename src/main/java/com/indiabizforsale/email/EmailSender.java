@@ -122,9 +122,10 @@ public class EmailSender extends RecursiveAction {
             sendTemplatedEmailRequest.setTemplate(payLoad.getTemplateName());
             sendTemplatedEmailRequest.setTemplateData(payLoad.getFirstTemplate());
             sendTemplatedEmailRequest.setConfigurationSetName(payLoad.getConfigSet());
-            sendTemplatedEmailRequest.withTags(new MessageTag().withName(payLoad.getTemplateName()));
+            sendTemplatedEmailRequest.withTags(new MessageTag().withName("TemplateName").withValue(payLoad.getTemplateName()));
 
             try {
+                logger.info("{}",sendTemplatedEmailRequest);
                 logger.info("Attempting to send an email through Amazon SES by using the AWS SDK for Java...");
                 SendTemplatedEmailResult sr = client.getAmazonSimpleEmailService().sendTemplatedEmail(sendTemplatedEmailRequest);
                 logger.info(sr.getMessageId());
@@ -154,7 +155,7 @@ public class EmailSender extends RecursiveAction {
         sendBulkTemplatedEmailRequest.setSource(payLoad.getFrom());
         sendBulkTemplatedEmailRequest.setTemplate(payLoad.getTemplateName());
         sendBulkTemplatedEmailRequest.setConfigurationSetName(payLoad.getConfigSet());
-        sendBulkTemplatedEmailRequest.withDefaultTags(new MessageTag().withName(payLoad.getTemplateName()));
+        sendBulkTemplatedEmailRequest.withDefaultTags(new MessageTag().withName("TemplateName").withValue(payLoad.getTemplateName()));
         Collection<BulkEmailDestination> bulkEmailDestinations = new ArrayList<>();
         EmailValidationService emailValidationService = new EmailValidationService();
         Iterator itr = recipients.iterator();
@@ -210,7 +211,7 @@ public class EmailSender extends RecursiveAction {
             sendEmailRequest.setDestination(new Destination().withToAddresses(payLoad.getTo().get(0).getRawEmail()));
             sendEmailRequest.setSource(payLoad.getFrom());
             sendEmailRequest.setConfigurationSetName(payLoad.getConfigSet());
-            sendEmailRequest.withTags(new MessageTag().withName(payLoad.getSubject()));
+            sendEmailRequest.withTags(new MessageTag().withName("Subject").withValue(payLoad.getSubject()));
             sendEmailRequest.setMessage(new Message().withSubject(new Content().withData(payLoad.getSubject())
                     .withCharset(WITHCHARSET)).withBody(new Body().withText(new Content().
                     withData(payLoad.getBodyText())
@@ -247,7 +248,7 @@ public class EmailSender extends RecursiveAction {
                 SendEmailRequest sendEmailRequest = new SendEmailRequest();
                 sendEmailRequest.withSource(payLoad.getFrom());
                 sendEmailRequest.withConfigurationSetName(payLoad.getConfigSet());
-                sendEmailRequest.withTags(new MessageTag().withName(payLoad.getSubject()));
+                sendEmailRequest.withTags(new MessageTag().withName("Subject").withValue(payLoad.getSubject()));
                 sendEmailRequest.setMessage(new Message().withSubject(new Content().withData(payLoad.getSubject())
                         .withCharset(WITHCHARSET)).withBody(new Body().withText(new Content()
                         .withData(getTemplatedMessage(templateData, payLoad.getBodyText())).withCharset(WITHCHARSET))
