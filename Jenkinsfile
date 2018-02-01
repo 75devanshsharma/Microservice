@@ -2,17 +2,8 @@ pipeline {
   agent any
   stages {
     stage('Build') {
-      parallel {
-        stage('Build') {
-          steps {
-            sh 'sh ./gradlew shadowJar'
-          }
-        }
-        stage('upload to sonarqube') {
-          steps {
-            sh 'sh ./gradlew sonarqube -Dsonar.host.url=http://sonar.indiabizforsale.com -Dsonar.login=dba561fd9e8e2158f9947c15706159d6ef074259'
-          }
-        }
+      steps {
+        sh 'sh ./gradlew shadowJar'
       }
     }
     stage('docker build') {
