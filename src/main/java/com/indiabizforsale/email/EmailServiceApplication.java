@@ -26,7 +26,7 @@ class EmailServiceApplication {
         logger.info(subscription);
         logger.info("Running Application in {}", runMode);
         Subscriber subscriber = null;
-        PubSubSubscriber pubSubSubscriber = new PubSubSubscriber(subscription, runMode);
+        PubSubSubscriber pubSubSubscriber = new PubSubSubscriber(subscription);
         try {
             subscriber = pubSubSubscriber.getSubscriber();
             pubSubSubscriber.startSubscriber(subscriber);

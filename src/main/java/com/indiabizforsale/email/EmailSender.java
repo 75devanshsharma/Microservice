@@ -32,7 +32,6 @@ public class EmailSender extends RecursiveAction {
 
     public EmailSender(AmazonSimpleEmailServiceClient client) {
         this.client = client;
-        logger.info("{}", this.client);
     }
 
 
@@ -125,7 +124,7 @@ public class EmailSender extends RecursiveAction {
             sendTemplatedEmailRequest.withTags(new MessageTag().withName("templateName").withValue(payLoad.getTemplateName()));
 
             try {
-                logger.info("{}",sendTemplatedEmailRequest);
+                logger.info("{}", sendTemplatedEmailRequest);
                 logger.info("Attempting to send an email through Amazon SES by using the AWS SDK for Java...");
                 SendTemplatedEmailResult sr = client.getAmazonSimpleEmailService().sendTemplatedEmail(sendTemplatedEmailRequest);
                 logger.info(sr.getMessageId());

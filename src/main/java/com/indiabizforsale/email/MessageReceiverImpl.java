@@ -12,11 +12,6 @@ import java.io.IOException;
 
 public class MessageReceiverImpl implements com.google.cloud.pubsub.v1.MessageReceiver {
     private static final Logger logger = LoggerFactory.getLogger(MessageReceiverImpl.class);
-    private String runMode;
-
-    MessageReceiverImpl(String runMode) {
-        this.runMode = runMode;
-    }
 
     /**
      * <p>
@@ -39,10 +34,8 @@ public class MessageReceiverImpl implements com.google.cloud.pubsub.v1.MessageRe
         logger.info("Message {} ", msg);
         try {
             PayLoad payLoad = mapper.readValue(msg, PayLoad.class);
-            if (runMode.equals("prod")) {
-                emailSender.sendEmail(payLoad);
+            emailSender.sendEmail(payLoad);
 //                logger.info("hii");
-            }
         } catch (EventParserException e) {
             logger.error("Exception", e);
             consumer.ack();

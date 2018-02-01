@@ -13,11 +13,9 @@ public class PubSubSubscriber {
     private static final String PROJECT_ID = ServiceOptions.getDefaultProjectId();
     private static final Logger logger = LoggerFactory.getLogger(PubSubSubscriber.class);
     private String subscriptionId;
-    private String runMode;
 
-    PubSubSubscriber(String subscriptionId, String runMode) {
+    PubSubSubscriber(String subscriptionId) {
         this.subscriptionId = subscriptionId;
-        this.runMode = runMode;
     }
 
     public void startSubscriber(Subscriber subscriber) {
@@ -41,7 +39,7 @@ public class PubSubSubscriber {
         Subscriber subscriber;
 
         try {
-            subscriber = Subscriber.newBuilder(subscriptionName, new MessageReceiverImpl(runMode))
+            subscriber = Subscriber.newBuilder(subscriptionName, new MessageReceiverImpl())
                     .setFlowControlSettings(flowControlSettings)
                     .build();
             subscriber.addListener(

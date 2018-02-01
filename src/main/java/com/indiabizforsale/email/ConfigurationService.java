@@ -32,7 +32,6 @@ public class ConfigurationService {
     private String getAccessKey() {
         if (!ofNullable(accessKeyId).isPresent())
             getCredentials();
-        logger.info(accessKeyId);
         return accessKeyId;
 
     }
@@ -40,7 +39,6 @@ public class ConfigurationService {
     private String getSecretKey() {
         if (!ofNullable(secretAccessKey).isPresent())
             getCredentials();
-        logger.info(secretAccessKey);
         return secretAccessKey;
     }
 
