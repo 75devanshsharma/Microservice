@@ -111,17 +111,33 @@ public class EmailSender extends RecursiveAction {
      * @throws IOException
      */
 
+    private Collection<MessageTag> tagCollection(Recipient recipient, PayLoad payLoad, String subject) {
+        Collection<MessageTag> messageTagCollection = new ArrayList<>();
+        MessageTag messageTag = new MessageTag();
+        MessageTag messageTag1 = new MessageTag();
+        if (subject.equalsIgnoreCase("true")) {
+            messageTag.withName("subjectName").withValue(payLoad.getSubject());
+        } else {
+            messageTag.withName("templateName").withValue(payLoad.getTemplateName());
+        }
+        messageTag1.withName("templateData").withValue(recipient.getTemplateData().toString());
+        messageTagCollection.add(messageTag);
+        messageTagCollection.add(messageTag1);
+        return messageTagCollection;
+    }
+
     private void sendSingleEmail(PayLoad payLoad) throws IOException {
         EmailValidationService emailValidationService = new EmailValidationService();
 
         if (emailValidationService.isValid(payLoad.getTo().get(0).getRawEmail())) {
+            Recipient recipient = payLoad.getTo().get(0);
             SendTemplatedEmailRequest sendTemplatedEmailRequest = new SendTemplatedEmailRequest();
             sendTemplatedEmailRequest.setDestination(new Destination().withToAddresses(payLoad.getFirstEmail()));
             sendTemplatedEmailRequest.setSource(payLoad.getFrom());
             sendTemplatedEmailRequest.setTemplate(payLoad.getTemplateName());
             sendTemplatedEmailRequest.setTemplateData(payLoad.getFirstTemplate());
             sendTemplatedEmailRequest.withConfigurationSetName(payLoad.getConfigSet());
-            sendTemplatedEmailRequest.withTags(new MessageTag().withName("templateName").withValue(payLoad.getTemplateName()));
+            sendTemplatedEmailRequest.withTags(tagCollection(recipient, payLoad, "false"));
 
             try {
                 logger.info("{}", sendTemplatedEmailRequest);
@@ -154,7 +170,6 @@ public class EmailSender extends RecursiveAction {
         sendBulkTemplatedEmailRequest.setSource(payLoad.getFrom());
         sendBulkTemplatedEmailRequest.setTemplate(payLoad.getTemplateName());
         sendBulkTemplatedEmailRequest.setConfigurationSetName(payLoad.getConfigSet());
-        sendBulkTemplatedEmailRequest.withDefaultTags(new MessageTag().withName("templateName").withValue(payLoad.getTemplateName()));
         Collection<BulkEmailDestination> bulkEmailDestinations = new ArrayList<>();
         EmailValidationService emailValidationService = new EmailValidationService();
         Iterator itr = recipients.iterator();
@@ -169,6 +184,7 @@ public class EmailSender extends RecursiveAction {
                 destination.withToAddresses(recipient.getEmail());
                 bulkEmailDestination.setDestination(destination);
                 bulkEmailDestination.setReplacementTemplateData(recipient.getTemplateDataJson());
+                bulkEmailDestination.setReplacementTags(tagCollection(recipient, payLoad, "false"));
                 bulkEmailDestinations.add(bulkEmailDestination);
                 count++;
                 if (count >= 20 || !itr.hasNext()) {
@@ -178,6 +194,7 @@ public class EmailSender extends RecursiveAction {
                     sendBulkTemplatedEmailRequest.setDestinations(bulkEmailDestinations);
                     sendBulkTemplatedEmailRequest.setDefaultTemplateData("{}");
                     try {
+                        logger.info("{}", sendBulkTemplatedEmailRequest);
                         logger.info("Attempting to send bulk emails through Amazon SES by using the AWS SDK for Java...");
                         SendBulkTemplatedEmailResult sendBulkTemplatedEmailResult = client.getAmazonSimpleEmailService().sendBulkTemplatedEmail(sendBulkTemplatedEmailRequest);
                         logger.info("{}", sendBulkTemplatedEmailResult.getStatus());
@@ -244,10 +261,11 @@ public class EmailSender extends RecursiveAction {
         for (int i = from; i < count; i++) {
             Map<String, String> templateData = payLoad.getTo().get(i).getTemplateData();
             if (emailValidationService.isValid(payLoad.getTo().get(i).getRawEmail())) {
+                Recipient recipient = payLoad.getTo().get(i);
                 SendEmailRequest sendEmailRequest = new SendEmailRequest();
                 sendEmailRequest.withSource(payLoad.getFrom());
                 sendEmailRequest.withConfigurationSetName(payLoad.getConfigSet());
-                sendEmailRequest.withTags(new MessageTag().withName("Subject").withValue(payLoad.getSubject()));
+                sendEmailRequest.withTags(tagCollection(recipient, payLoad, "true"));
                 sendEmailRequest.setMessage(new Message().withSubject(new Content().withData(payLoad.getSubject())
                         .withCharset(WITHCHARSET)).withBody(new Body().withText(new Content()
                         .withData(getTemplatedMessage(templateData, payLoad.getBodyText())).withCharset(WITHCHARSET))
@@ -258,7 +276,7 @@ public class EmailSender extends RecursiveAction {
                 try {
                     logger.info("Attempting to send bulk emails through Amazon SES by using the AWS SDK for Java....");
                     SendEmailResult sendEmailResult = client.getAmazonSimpleEmailService().sendEmail(sendEmailRequest);
-//                    logger.info("{}", sendEmailResult.getMessageId());
+                    logger.info("{}", sendEmailResult.getMessageId());
                     logger.info("Email sent.....");
                 } catch (Exception ex) {
                     logger.error("The email was not sent..!", ex);

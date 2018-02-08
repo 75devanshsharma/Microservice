@@ -96,14 +96,13 @@ public class EmailSenderTest {
         ArrayList<Recipient> to = new ArrayList<>();
         Recipient recipient = new Recipient();
         recipient.setEmail("devansh@indiabizforsale.com");
-        recipient.setTemplateData(getTemplateData());
         to.add(recipient);
         payLoad.setTo(to);
         payLoad.setFrom("devansh@indiabizforsale.com");
         payLoad.setFromName("Devansh");
         payLoad.setSubject("Hello");
-        payLoad.setBodyText("Hi ${name} . How are you ?");
-        payLoad.setBodyHtml("<p> Hi ${name} . How are you ? </p>");
+        payLoad.setBodyText("Hi Dev . How are you ?");
+        payLoad.setBodyHtml("<p> Hi Dev . How are you ? </p>");
         payLoad.setConfigSet("Config1");
         emailSender.sendEmail(payLoad);
         verify(amazonSimpleEmailService, times(1)).sendEmail(any(SendEmailRequest.class));
