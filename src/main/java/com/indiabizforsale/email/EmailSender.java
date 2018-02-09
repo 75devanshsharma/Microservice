@@ -1,6 +1,7 @@
 package com.indiabizforsale.email;
 
 import com.amazonaws.services.simpleemail.model.*;
+import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.indiabizforsale.email.model.PayLoad;
 import com.indiabizforsale.email.model.Recipient;
@@ -111,21 +112,8 @@ public class EmailSender extends RecursiveAction {
      * @throws IOException
      */
 
-    private Collection<MessageTag> tagCollection(Recipient recipient, PayLoad payLoad, String subject) {
-        Collection<MessageTag> messageTagCollection = new ArrayList<>();
-        MessageTag messageTag = new MessageTag();
-        MessageTag messageTag1 = new MessageTag();
-        if (subject.equalsIgnoreCase("true")) {
-            messageTag.withName("subjectName").withValue(payLoad.getSubject());
-        } else {
-            messageTag.withName("templateName").withValue(payLoad.getTemplateName());
-        }
-        messageTag1.withName("templateData").withValue(recipient.getTemplateData().toString());
-        messageTagCollection.add(messageTag);
-        messageTagCollection.add(messageTag1);
-        return messageTagCollection;
-    }
 
+    @Timed
     private void sendSingleEmail(PayLoad payLoad) throws IOException {
         EmailValidationService emailValidationService = new EmailValidationService();
 
@@ -137,7 +125,7 @@ public class EmailSender extends RecursiveAction {
             sendTemplatedEmailRequest.setTemplate(payLoad.getTemplateName());
             sendTemplatedEmailRequest.setTemplateData(payLoad.getFirstTemplate());
             sendTemplatedEmailRequest.withConfigurationSetName(payLoad.getConfigSet());
-            sendTemplatedEmailRequest.withTags(tagCollection(recipient, payLoad, "false"));
+            sendTemplatedEmailRequest.withTags(new MessageTag().withName("templateName").withValue(payLoad.getTemplateName()));
 
             try {
                 logger.info("{}", sendTemplatedEmailRequest);
@@ -164,12 +152,14 @@ public class EmailSender extends RecursiveAction {
      * @throws JsonProcessingException
      */
 
+    @Timed
     private void sendBulkEmail(PayLoad payLoad) throws JsonProcessingException {
         ArrayList<Recipient> recipients = payLoad.getTo();
         SendBulkTemplatedEmailRequest sendBulkTemplatedEmailRequest = new SendBulkTemplatedEmailRequest();
         sendBulkTemplatedEmailRequest.setSource(payLoad.getFrom());
         sendBulkTemplatedEmailRequest.setTemplate(payLoad.getTemplateName());
         sendBulkTemplatedEmailRequest.setConfigurationSetName(payLoad.getConfigSet());
+        sendBulkTemplatedEmailRequest.withDefaultTags(new MessageTag().withName("templateName").withValue(payLoad.getTemplateName()));
         Collection<BulkEmailDestination> bulkEmailDestinations = new ArrayList<>();
         EmailValidationService emailValidationService = new EmailValidationService();
         Iterator itr = recipients.iterator();
@@ -184,7 +174,6 @@ public class EmailSender extends RecursiveAction {
                 destination.withToAddresses(recipient.getEmail());
                 bulkEmailDestination.setDestination(destination);
                 bulkEmailDestination.setReplacementTemplateData(recipient.getTemplateDataJson());
-                bulkEmailDestination.setReplacementTags(tagCollection(recipient, payLoad, "false"));
                 bulkEmailDestinations.add(bulkEmailDestination);
                 count++;
                 if (count >= 20 || !itr.hasNext()) {
@@ -218,6 +207,7 @@ public class EmailSender extends RecursiveAction {
      *
      * @param payLoad
      */
+    @Timed
     private void sendSingleFormattedEmail(PayLoad payLoad) {
         EmailValidationService emailValidationService = new EmailValidationService();
         logger.info("Entered sendSingleFormattedEmail");
@@ -227,7 +217,7 @@ public class EmailSender extends RecursiveAction {
             sendEmailRequest.setDestination(new Destination().withToAddresses(payLoad.getTo().get(0).getRawEmail()));
             sendEmailRequest.setSource(payLoad.getFrom());
             sendEmailRequest.setConfigurationSetName(payLoad.getConfigSet());
-            sendEmailRequest.withTags(new MessageTag().withName("Subject").withValue(payLoad.getSubject()));
+            sendEmailRequest.withTags(new MessageTag().withName("subject").withValue(payLoad.getSubject()));
             sendEmailRequest.setMessage(new Message().withSubject(new Content().withData(payLoad.getSubject())
                     .withCharset(WITHCHARSET)).withBody(new Body().withText(new Content().
                     withData(payLoad.getBodyText())
@@ -255,6 +245,7 @@ public class EmailSender extends RecursiveAction {
      *
      * @param payLoad
      */
+    @Timed
     private void sendBulkFormattedEmail(AmazonSimpleEmailServiceClient client, PayLoad payLoad, int from, int count) {
         logger.info("Entered sendBulkFormattedEmail");
         EmailValidationService emailValidationService = new EmailValidationService();
@@ -265,7 +256,7 @@ public class EmailSender extends RecursiveAction {
                 SendEmailRequest sendEmailRequest = new SendEmailRequest();
                 sendEmailRequest.withSource(payLoad.getFrom());
                 sendEmailRequest.withConfigurationSetName(payLoad.getConfigSet());
-                sendEmailRequest.withTags(tagCollection(recipient, payLoad, "true"));
+                sendEmailRequest.withTags(new MessageTag().withName("subject").withValue(payLoad.getSubject()));
                 sendEmailRequest.setMessage(new Message().withSubject(new Content().withData(payLoad.getSubject())
                         .withCharset(WITHCHARSET)).withBody(new Body().withText(new Content()
                         .withData(getTemplatedMessage(templateData, payLoad.getBodyText())).withCharset(WITHCHARSET))

@@ -3,6 +3,7 @@ package com.indiabizforsale.email;
 import com.google.cloud.pubsub.v1.Subscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.stagemonitor.core.Stagemonitor;
 
 class EmailServiceApplication {
 
@@ -11,7 +12,7 @@ class EmailServiceApplication {
     private String runMode;
 
     public static void main(String[] args) {
-
+        Stagemonitor.init();
         new ConfigurationService().setEmailCredentials();
         new EmailServiceApplication().listenAndProcess();
     }
