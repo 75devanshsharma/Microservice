@@ -118,7 +118,6 @@ public class EmailSender extends RecursiveAction {
         EmailValidationService emailValidationService = new EmailValidationService();
 
         if (emailValidationService.isValid(payLoad.getTo().get(0).getRawEmail())) {
-            Recipient recipient = payLoad.getTo().get(0);
             SendTemplatedEmailRequest sendTemplatedEmailRequest = new SendTemplatedEmailRequest();
             sendTemplatedEmailRequest.setDestination(new Destination().withToAddresses(payLoad.getFirstEmail()));
             sendTemplatedEmailRequest.setSource(payLoad.getFrom());
