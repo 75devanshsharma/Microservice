@@ -116,7 +116,7 @@ public class EmailSenderTest {
         payLoad.setFromName("Devansh");
         payLoad.setSubject("Hello");
         payLoad.setBodyText("Hi ${name} . How are you ?");
-        payLoad.setBodyHtml("<p> Hi ${name} . How are you ? </p>");
+        payLoad.setBodyHtml("<p> Hi ${name} . It is from ${fromName}.</p>");
         payLoad.setConfigSet("Config1");
         emailSender.sendEmail(payLoad);
         verify(amazonSimpleEmailService, times(25)).sendEmail(any(SendEmailRequest.class));

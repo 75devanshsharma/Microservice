@@ -12,7 +12,6 @@ public class Recipient {
     private String email;
     private Map<String, String> templateData;
 
-
     public Map<String, String> getTemplateData() {
         return templateData;
     }

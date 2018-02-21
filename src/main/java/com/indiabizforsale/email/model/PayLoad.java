@@ -17,6 +17,7 @@ public class PayLoad {
     private String templateName;
     private String configSet;
 
+
     public String getConfigSet() {
         return configSet;
     }

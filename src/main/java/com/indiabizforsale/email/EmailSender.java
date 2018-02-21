@@ -116,14 +116,19 @@ public class EmailSender extends RecursiveAction {
     @Timed
     private void sendSingleEmail(PayLoad payLoad) throws IOException {
         EmailValidationService emailValidationService = new EmailValidationService();
-
-        if (emailValidationService.isValid(payLoad.getTo().get(0).getRawEmail())) {
+        Recipient recipient = payLoad.getTo().get(0);
+        if (emailValidationService.isValid(recipient.getRawEmail())) {
+            Map<String, String> templateData = recipient.getTemplateData();
+            templateData.put("fromName", payLoad.getFromName());
+            templateData.put("fromAddress", payLoad.getRawFrom());
+            payLoad.getTo().get(0).setTemplateData(templateData);
             SendTemplatedEmailRequest sendTemplatedEmailRequest = new SendTemplatedEmailRequest();
             sendTemplatedEmailRequest.setDestination(new Destination().withToAddresses(payLoad.getFirstEmail()));
             sendTemplatedEmailRequest.setSource(payLoad.getFrom());
             sendTemplatedEmailRequest.setTemplate(payLoad.getTemplateName());
             sendTemplatedEmailRequest.setTemplateData(payLoad.getFirstTemplate());
             sendTemplatedEmailRequest.withConfigurationSetName(payLoad.getConfigSet());
+            sendTemplatedEmailRequest.withTemplateData(recipient.getTemplateDataJson());
             sendTemplatedEmailRequest.withTags(new MessageTag().withName("templateName").withValue(payLoad.getTemplateName()));
 
             try {
@@ -172,7 +177,14 @@ public class EmailSender extends RecursiveAction {
                 Destination destination = new Destination();
                 destination.withToAddresses(recipient.getEmail());
                 bulkEmailDestination.setDestination(destination);
-                bulkEmailDestination.setReplacementTemplateData(recipient.getTemplateDataJson());
+                if (!recipient.getTemplateData().containsKey("fromName")) {
+                    Map<String, String> map = recipient.getTemplateData();
+                    map.put("fromName", payLoad.getFromName());
+                    map.put("fromAddress", payLoad.getRawFrom());
+                    recipient.setTemplateData(map);
+                    bulkEmailDestination.setReplacementTemplateData(recipient.getTemplateDataJson());
+                } else
+                    bulkEmailDestination.setReplacementTemplateData(recipient.getTemplateDataJson());
                 bulkEmailDestinations.add(bulkEmailDestination);
                 count++;
                 if (count >= 20 || !itr.hasNext()) {
@@ -251,7 +263,8 @@ public class EmailSender extends RecursiveAction {
         for (int i = from; i < count; i++) {
             Map<String, String> templateData = payLoad.getTo().get(i).getTemplateData();
             if (emailValidationService.isValid(payLoad.getTo().get(i).getRawEmail())) {
-                Recipient recipient = payLoad.getTo().get(i);
+                templateData.put("fromName", payLoad.getFromName());
+                templateData.put("fromAddress", payLoad.getRawFrom());
                 SendEmailRequest sendEmailRequest = new SendEmailRequest();
                 sendEmailRequest.withSource(payLoad.getFrom());
                 sendEmailRequest.withConfigurationSetName(payLoad.getConfigSet());
