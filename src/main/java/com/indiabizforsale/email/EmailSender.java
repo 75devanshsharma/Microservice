@@ -121,6 +121,7 @@ public class EmailSender extends RecursiveAction {
             templateData.put("fromName", payLoad.getFromName());
             templateData.put("fromAddress", payLoad.getRawFrom());
             payLoad.getTo().get(0).setTemplateData(templateData);
+            logger.info("template data {}",templateData);
             SendTemplatedEmailRequest sendTemplatedEmailRequest = new SendTemplatedEmailRequest();
             sendTemplatedEmailRequest.setDestination(new Destination().withToAddresses(payLoad.getFirstEmail()));
             sendTemplatedEmailRequest.setSource(payLoad.getFrom());
