@@ -116,9 +116,8 @@ public class EmailSender extends RecursiveAction {
     @Timed
     private void sendSingleEmail(PayLoad payLoad) throws IOException {
         EmailValidationService emailValidationService = new EmailValidationService();
-        Recipient recipient = payLoad.getTo().get(0);
-        if (emailValidationService.isValid(recipient.getRawEmail())) {
-            Map<String, String> templateData = recipient.getTemplateData();
+        if (emailValidationService.isValid(payLoad.getTo().get(0).getRawEmail())) {
+            Map<String, String> templateData = payLoad.getTo().get(0).getTemplateData();
             templateData.put("fromName", payLoad.getFromName());
             templateData.put("fromAddress", payLoad.getRawFrom());
             payLoad.getTo().get(0).setTemplateData(templateData);
@@ -128,7 +127,7 @@ public class EmailSender extends RecursiveAction {
             sendTemplatedEmailRequest.setTemplate(payLoad.getTemplateName());
             sendTemplatedEmailRequest.setTemplateData(payLoad.getFirstTemplate());
             sendTemplatedEmailRequest.withConfigurationSetName(payLoad.getConfigSet());
-            sendTemplatedEmailRequest.withTemplateData(recipient.getTemplateDataJson());
+            sendTemplatedEmailRequest.withTemplateData(payLoad.getTo().get(0).getTemplateDataJson());
             sendTemplatedEmailRequest.withTags(new MessageTag().withName("templateName").withValue(payLoad.getTemplateName()));
 
             try {
