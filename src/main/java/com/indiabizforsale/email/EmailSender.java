@@ -118,8 +118,8 @@ public class EmailSender extends RecursiveAction {
         EmailValidationService emailValidationService = new EmailValidationService();
         if (emailValidationService.isValid(payLoad.getTo().get(0).getRawEmail())) {
             Map<String, String> templateData = payLoad.getTo().get(0).getTemplateData();
-            templateData.put("fromName", payLoad.getFromName());
-            templateData.put("fromAddress", payLoad.getRawFrom());
+            templateData.put("from_name", payLoad.getFromName());
+            templateData.put("from_address", payLoad.getRawFrom());
             payLoad.getTo().get(0).setTemplateData(templateData);
             SendTemplatedEmailRequest sendTemplatedEmailRequest = new SendTemplatedEmailRequest();
             sendTemplatedEmailRequest.setDestination(new Destination().withToAddresses(payLoad.getFirstEmail()));
@@ -176,10 +176,10 @@ public class EmailSender extends RecursiveAction {
                 Destination destination = new Destination();
                 destination.withToAddresses(recipient.getEmail());
                 bulkEmailDestination.setDestination(destination);
-                if (!recipient.getTemplateData().containsKey("fromName")) {
+                if (!recipient.getTemplateData().containsKey("from_name")) {
                     Map<String, String> map = recipient.getTemplateData();
-                    map.put("fromName", payLoad.getFromName());
-                    map.put("fromAddress", payLoad.getRawFrom());
+                    map.put("from_name", payLoad.getFromName());
+                    map.put("from_address", payLoad.getRawFrom());
                     recipient.setTemplateData(map);
                     bulkEmailDestination.setReplacementTemplateData(recipient.getTemplateDataJson());
                 } else
@@ -262,8 +262,8 @@ public class EmailSender extends RecursiveAction {
         for (int i = from; i < count; i++) {
             Map<String, String> templateData = payLoad.getTo().get(i).getTemplateData();
             if (emailValidationService.isValid(payLoad.getTo().get(i).getRawEmail())) {
-                templateData.put("fromName", payLoad.getFromName());
-                templateData.put("fromAddress", payLoad.getRawFrom());
+                templateData.put("from_name", payLoad.getFromName());
+                templateData.put("from_address", payLoad.getRawFrom());
                 SendEmailRequest sendEmailRequest = new SendEmailRequest();
                 sendEmailRequest.withSource(payLoad.getFrom());
                 sendEmailRequest.withConfigurationSetName(payLoad.getConfigSet());
