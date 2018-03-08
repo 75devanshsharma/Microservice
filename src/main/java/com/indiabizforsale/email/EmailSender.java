@@ -1,6 +1,7 @@
 package com.indiabizforsale.email;
 
 import com.amazonaws.services.simpleemail.model.*;
+import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.indiabizforsale.email.model.PayLoad;
@@ -113,6 +114,7 @@ public class EmailSender extends RecursiveAction {
      */
 
 
+    @ExceptionMetered
     @Timed
     private void sendSingleEmail(PayLoad payLoad) throws IOException {
         EmailValidationService emailValidationService = new EmailValidationService();
@@ -158,6 +160,7 @@ public class EmailSender extends RecursiveAction {
      * @throws JsonProcessingException
      */
 
+    @ExceptionMetered
     @Timed
     private void sendBulkEmail(PayLoad payLoad) throws JsonProcessingException {
         ArrayList<Recipient> recipients = payLoad.getTo();
@@ -220,6 +223,7 @@ public class EmailSender extends RecursiveAction {
      *
      * @param payLoad
      */
+    @ExceptionMetered
     @Timed
     private void sendSingleFormattedEmail(PayLoad payLoad) {
         EmailValidationService emailValidationService = new EmailValidationService();
@@ -258,6 +262,7 @@ public class EmailSender extends RecursiveAction {
      *
      * @param payLoad
      */
+    @ExceptionMetered
     @Timed
     private void sendBulkFormattedEmail(AmazonSimpleEmailServiceClient client, PayLoad payLoad, int from, int count) {
         logger.info("Entered sendBulkFormattedEmail");
