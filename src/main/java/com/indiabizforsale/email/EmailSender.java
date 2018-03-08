@@ -117,11 +117,13 @@ public class EmailSender extends RecursiveAction {
     private void sendSingleEmail(PayLoad payLoad) throws IOException {
         EmailValidationService emailValidationService = new EmailValidationService();
         if (emailValidationService.isValid(payLoad.getTo().get(0).getRawEmail())) {
-            Map<String, String> templateData = payLoad.getTo().get(0).getTemplateData();
+            Map<String, Object> templateData = payLoad.getTo().get(0).getTemplateData();
             templateData.put("from_name", payLoad.getFromName());
             templateData.put("from_address", payLoad.getRawFrom());
+            if (payLoad.getAttachments() != null)
+                templateData.put("attachments", payLoad.getAttachments());
             payLoad.getTo().get(0).setTemplateData(templateData);
-            logger.info("template data {}",templateData);
+            logger.info("template data {}", templateData);
             SendTemplatedEmailRequest sendTemplatedEmailRequest = new SendTemplatedEmailRequest();
             sendTemplatedEmailRequest.setDestination(new Destination().withToAddresses(payLoad.getFirstEmail()));
             sendTemplatedEmailRequest.setSource(payLoad.getFrom());
@@ -178,7 +180,7 @@ public class EmailSender extends RecursiveAction {
                 destination.withToAddresses(recipient.getEmail());
                 bulkEmailDestination.setDestination(destination);
                 if (!recipient.getTemplateData().containsKey("from_name")) {
-                    Map<String, String> map = recipient.getTemplateData();
+                    Map<String, Object> map = recipient.getTemplateData();
                     map.put("from_name", payLoad.getFromName());
                     map.put("from_address", payLoad.getRawFrom());
                     recipient.setTemplateData(map);
@@ -261,7 +263,7 @@ public class EmailSender extends RecursiveAction {
         logger.info("Entered sendBulkFormattedEmail");
         EmailValidationService emailValidationService = new EmailValidationService();
         for (int i = from; i < count; i++) {
-            Map<String, String> templateData = payLoad.getTo().get(i).getTemplateData();
+            Map<String, Object> templateData = payLoad.getTo().get(i).getTemplateData();
             if (emailValidationService.isValid(payLoad.getTo().get(i).getRawEmail())) {
                 templateData.put("from_name", payLoad.getFromName());
                 templateData.put("from_address", payLoad.getRawFrom());
@@ -292,7 +294,7 @@ public class EmailSender extends RecursiveAction {
     }
 
 
-    public String getTemplatedMessage(Map<String, String> model, String bodyMessage) {
+    public String getTemplatedMessage(Map<String, Object> model, String bodyMessage) {
         String message = "";
         try {
             Configuration configuration = new Configuration(Configuration.VERSION_2_3_27);

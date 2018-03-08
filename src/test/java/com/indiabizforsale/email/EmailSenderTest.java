@@ -4,6 +4,7 @@ import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.model.SendBulkTemplatedEmailRequest;
 import com.amazonaws.services.simpleemail.model.SendEmailRequest;
 import com.amazonaws.services.simpleemail.model.SendTemplatedEmailRequest;
+import com.indiabizforsale.email.model.Attachments;
 import com.indiabizforsale.email.model.PayLoad;
 import com.indiabizforsale.email.model.Recipient;
 import org.junit.Assert;
@@ -51,19 +52,26 @@ public class EmailSenderTest {
         payLoad.setFromName("Devansh");
         payLoad.setTemplateName("MyTemplate1");
         payLoad.setConfigSet("Config1");
+        ArrayList<Attachments> attachment = new ArrayList<>();
+        Attachments attachmentData = new Attachments();
+        attachmentData.setName("abc.pdf");
+        attachmentData.setLink("link1");
+        attachment.add(attachmentData);
+        payLoad.setAttachments(attachment);
+        logger.info("{}", payLoad);
         emailSender.sendEmail(payLoad);
         verify(amazonSimpleEmailService, times(1)).sendTemplatedEmail(any(SendTemplatedEmailRequest.class));
     }
 
-    private Map<String, String> getTemplateData() {
-        Map<String, String> templateData = new HashMap<>();
+    private Map<String, Object> getTemplateData() {
+        Map<String, Object> templateData = new HashMap<>();
         templateData.put("name", "Dev");
         return templateData;
     }
 
     private ArrayList<Recipient> getBulkEmailData() {
         ArrayList<Recipient> to = new ArrayList<>();
-        Map<String, String> templateData;
+        Map<String, Object> templateData;
         Recipient recipient;
         for (int i = 0; i < 25; i++) {
             templateData = new HashMap<>();

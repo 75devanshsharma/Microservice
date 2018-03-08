@@ -16,7 +16,15 @@ public class PayLoad {
     private String subject;
     private String templateName;
     private String configSet;
+    private ArrayList<Attachments> attachments;
 
+    public ArrayList<Attachments> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(ArrayList<Attachments> attachments) {
+        this.attachments = attachments;
+    }
 
     public String getConfigSet() {
         return configSet;

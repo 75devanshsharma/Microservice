@@ -10,13 +10,13 @@ import java.util.Map;
 public class Recipient {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Recipient.class);
     private String email;
-    private Map<String, String> templateData;
+    private Map<String, Object> templateData;
 
-    public Map<String, String> getTemplateData() {
+    public Map<String, Object> getTemplateData() {
         return templateData;
     }
 
-    public void setTemplateData(Map<String, String> templateData) {
+    public void setTemplateData(Map<String, Object> templateData) {
         this.templateData = templateData;
     }
 
@@ -59,7 +59,7 @@ public class Recipient {
         return email;
     }
 
-    private String getTemplateValue(String key) {
+    private Object getTemplateValue(String key) {
         return templateData.get(key);
     }
 
