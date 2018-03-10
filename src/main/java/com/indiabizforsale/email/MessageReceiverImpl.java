@@ -1,5 +1,6 @@
 package com.indiabizforsale.email;
 
+import com.codahale.metrics.annotation.ExceptionMetered;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.pubsub.v1.PubsubMessage;
@@ -25,6 +26,7 @@ public class MessageReceiverImpl implements com.google.cloud.pubsub.v1.MessageRe
      * @param consumer
      */
 
+
     @Override
     public void receiveMessage(PubsubMessage message, AckReplyConsumer consumer) {
         EmailSender emailSender = new EmailSender(new AmazonSimpleEmailServiceClient());
@@ -35,12 +37,16 @@ public class MessageReceiverImpl implements com.google.cloud.pubsub.v1.MessageRe
         try {
             PayLoad payLoad = mapper.readValue(msg, PayLoad.class);
             emailSender.sendEmail(payLoad);
-//                logger.info("hii");
         } catch (EventParserException e) {
             logger.error("Exception", e);
             consumer.ack();
         } catch (IOException e) {
             logger.error("IOException", e);
+            consumer.ack();
+        }
+        catch(Exception e){
+            logger.error("Exception",e);
+            consumer.ack();
         }
         consumer.ack();
 

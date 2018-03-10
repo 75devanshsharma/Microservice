@@ -114,8 +114,8 @@ public class EmailSender extends RecursiveAction {
      */
 
 
-    @ExceptionMetered
     @Timed
+    @ExceptionMetered
     private void sendSingleEmail(PayLoad payLoad) throws IOException {
         EmailValidationService emailValidationService = new EmailValidationService();
         if (emailValidationService.isValid(payLoad.getTo().get(0).getRawEmail())) {
@@ -135,16 +135,11 @@ public class EmailSender extends RecursiveAction {
             sendTemplatedEmailRequest.withTemplateData(payLoad.getTo().get(0).getTemplateDataJson());
             sendTemplatedEmailRequest.withTags(new MessageTag().withName("templateName").withValue(payLoad.getTemplateName()));
 
-            try {
-                logger.info("{}", sendTemplatedEmailRequest);
-                logger.info("Attempting to send an email through Amazon SES by using the AWS SDK for Java...");
-                SendTemplatedEmailResult sr = client.getAmazonSimpleEmailService().sendTemplatedEmail(sendTemplatedEmailRequest);
-                logger.info(sr.getMessageId());
-                logger.info("Email sent!");
-            } catch (Exception ex) {
-                logger.warn("The email was not sent.");
-                logger.warn("Error message: " + ex.getMessage());
-            }
+            logger.info("{}", sendTemplatedEmailRequest);
+            logger.info("Attempting to send an email through Amazon SES by using the AWS SDK for Java...");
+            SendTemplatedEmailResult sr = client.getAmazonSimpleEmailService().sendTemplatedEmail(sendTemplatedEmailRequest);
+            logger.info(sr.getMessageId());
+            logger.info("Email sent!");
         } else
             logger.warn("Email format entered is incorrect. Please Check the email.");
     }
@@ -198,15 +193,11 @@ public class EmailSender extends RecursiveAction {
                     logger.info("{}", bulkEmailDestinations);
                     sendBulkTemplatedEmailRequest.setDestinations(bulkEmailDestinations);
                     sendBulkTemplatedEmailRequest.setDefaultTemplateData("{}");
-                    try {
-                        logger.info("{}", sendBulkTemplatedEmailRequest);
-                        logger.info("Attempting to send bulk emails through Amazon SES by using the AWS SDK for Java...");
-                        SendBulkTemplatedEmailResult sendBulkTemplatedEmailResult = client.getAmazonSimpleEmailService().sendBulkTemplatedEmail(sendBulkTemplatedEmailRequest);
-                        logger.info("{}", sendBulkTemplatedEmailResult.getStatus());
-                        logger.info("Email sent..");
-                    } catch (Exception ex) {
-                        logger.error("The email was not sent!!!", ex);
-                    }
+                    logger.info("{}", sendBulkTemplatedEmailRequest);
+                    logger.info("Attempting to send bulk emails through Amazon SES by using the AWS SDK for Java...");
+                    SendBulkTemplatedEmailResult sendBulkTemplatedEmailResult = client.getAmazonSimpleEmailService().sendBulkTemplatedEmail(sendBulkTemplatedEmailRequest);
+                    logger.info("{}", sendBulkTemplatedEmailResult.getStatus());
+                    logger.info("Email sent..");
                     count = 0;
                     bulkEmailDestinations.clear();
                 }
@@ -241,16 +232,12 @@ public class EmailSender extends RecursiveAction {
                     .withCharset(WITHCHARSET)).withHtml(new Content().withData(payLoad.getBodyText()).withCharset(WITHCHARSET))));
 
             logger.info("{}", sendEmailRequest);
-            try {
-                logger.info("Attempting to send an email through Amazon SES by using the AWS SDK for Java....");
+            logger.info("Attempting to send an email through Amazon SES by using the AWS SDK for Java....");
 
-                SendEmailResult sendEmailResult = client.getAmazonSimpleEmailService().sendEmail(sendEmailRequest);
+            SendEmailResult sendEmailResult = client.getAmazonSimpleEmailService().sendEmail(sendEmailRequest);
 
-                logger.info("Email sent..");
-                logger.info("{}", sendEmailResult.getMessageId());
-            } catch (Exception e) {
-                logger.error("The email was not sent!", e);
-            }
+            logger.info("Email sent..");
+            logger.info("{}", sendEmailResult.getMessageId());
         } else {
             logger.info("Email-format is invalid. Please check the format.");
         }
@@ -283,14 +270,10 @@ public class EmailSender extends RecursiveAction {
                                 .withData(getTemplatedMessage(templateData, payLoad.getBodyHtml())).withCharset(WITHCHARSET))));
                 sendEmailRequest.setDestination(new Destination().withToAddresses(payLoad.getTo().get(i).getEmail()));
                 logger.info("{}", sendEmailRequest);
-                try {
-                    logger.info("Attempting to send bulk emails through Amazon SES by using the AWS SDK for Java....");
-                    SendEmailResult sendEmailResult = client.getAmazonSimpleEmailService().sendEmail(sendEmailRequest);
-                    logger.info("{}", sendEmailResult.getMessageId());
-                    logger.info("Email sent.....");
-                } catch (Exception ex) {
-                    logger.error("The email was not sent..!", ex);
-                }
+                logger.info("Attempting to send bulk emails through Amazon SES by using the AWS SDK for Java....");
+                SendEmailResult sendEmailResult = client.getAmazonSimpleEmailService().sendEmail(sendEmailRequest);
+                logger.info("{}", sendEmailResult.getMessageId());
+                logger.info("Email sent.....");
             } else {
                 logger.debug("Wrong email format. Email is ignored -", payLoad.getTo().get(i).getRawEmail());
             }

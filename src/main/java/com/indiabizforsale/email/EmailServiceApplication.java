@@ -1,5 +1,6 @@
 package com.indiabizforsale.email;
 
+import com.codahale.metrics.annotation.ExceptionMetered;
 import com.google.cloud.pubsub.v1.Subscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
